@@ -1,3 +1,5 @@
+import { IItinerary } from '../itinerary/itinerary.interface';
+
 export interface IUser {
 	email: string;
 	provider: {
@@ -7,8 +9,7 @@ export interface IUser {
 	name: string;
 	image: string;
 
-	// TODO - Add itineraries model
-	itineraries: string[];
+	itineraries: IItinerary[];
 	preferences: string[];
 
 	createdAt: string;

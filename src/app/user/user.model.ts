@@ -28,8 +28,15 @@ const UserSchema = new mongoose.Schema<IUser>(
 			required: true,
 		},
 		itineraries: {
-			type: [String],
-			required: true,
+			type: [
+				{
+					type: mongoose.Schema.Types.ObjectId,
+					ref: Model.ITINERARY,
+					_id: false,
+				},
+			],
+			default: [],
+			_id: false,
 		},
 		preferences: {
 			type: [String],
@@ -39,6 +46,4 @@ const UserSchema = new mongoose.Schema<IUser>(
 	{ timestamps: true }
 );
 
-const User = mongoose.model<IUser>(Model.USER, UserSchema);
-
-export default User;
+export const UserModel = mongoose.model<IUser>(Model.USER, UserSchema);

@@ -1,5 +1,20 @@
 import axios from 'axios';
 
+type FlightOfferParams = {
+	originLocationCode: string;
+	destinationLocationCode: string;
+	departureDate: string;
+	returnDate: string;
+	adults: number;
+	children?: number;
+	infants?: number;
+	travelClass?: 'ECONOMY' | 'PREMIUM_ECONOMY' | 'BUSINESS' | 'FIRST';
+	nonStop?: boolean;
+	max?: number;
+	maxPrice?: number;
+	currencyCode?: string;
+};
+
 export class Amadeus {
 	private BASE_URL = 'https://test.api.amadeus.com/v2';
 	private client_id: string;
@@ -51,22 +66,10 @@ export class Amadeus {
 		return response.data;
 	}
 
-	getFlightOffers(
-		originLocationCode: string,
-		destinationLocationCode: string,
-		departureDate: string,
-		returnDate: string,
-		adults: number,
-		max: number
-	) {
-		const params = {
-			originLocationCode,
-			destinationLocationCode,
-			departureDate,
-			returnDate,
-			adults,
-			max,
-		};
+	getFlightOffers(params: FlightOfferParams) {
 		return this.request('/shopping/flight-offers', 'GET', params);
+	}
+	bookFLightOrder(params: any) {
+		return this.request('/booking/flight-orders', 'POST', null, params);
 	}
 }

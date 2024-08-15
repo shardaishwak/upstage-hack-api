@@ -12,10 +12,6 @@ const amadeus = new Amadeus(
 	process.env.AMADEUS_CLIENT_SECRET || ''
 );
 
-amadeus
-	.getFlightOffers('LAX', 'JFK', '2024-12-01', '2024-12-10', 1, 5)
-	.then((res) => console.log(JSON.stringify(res, null, 2)));
-
 const PORT = process.env.PORT || 5001;
 
 (async () => {

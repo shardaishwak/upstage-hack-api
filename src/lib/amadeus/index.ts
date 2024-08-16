@@ -1,5 +1,42 @@
 import axios from 'axios';
 
+// - Booking guidance:
+// https://developers.amadeus.com/blog/flight-booking-app-angular-1
+
+// - Price confirmation guidance (since price might flactuate):
+// https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-price
+
+// Get flight orders
+//https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-search/api-reference
+
+// - Book a flight
+// https://developers.amadeus.com/self-service/category/flights/api-doc/flight-create-orders/api-reference
+
+// - Get the information about a flight order
+// https://developers.amadeus.com/self-service/category/flights/api-doc/flight-order-management/api-reference
+
+// - Delete a reservation
+// https://developers.amadeus.com/self-service/category/flights/api-doc/flight-order-management/api-reference
+
+// ===================== RESTAURANT AND ATTRACTIONS/ACTIVITIES =====================
+
+// - Get activities to do in a place:
+// https://developers.amadeus.com/self-service/category/destination-experiences/api-doc/tours-and-activities/api-reference
+
+// - Point of interests (restuarantes and stuff):
+// https://developers.amadeus.com/self-service/category/destination-experiences/api-doc/points-of-interest/api-reference
+
+// ===================== HOTELS =====================
+// https://developers.amadeus.com/self-service/category/hotels/api-doc/hotel-list
+
+// Get list of hotels
+
+// Get price confirmation
+
+// Book the hotel
+
+// ===================== CAR TRANSFERS =====================
+// https://developers.amadeus.com/self-service/category/cars-and-transfers/api-doc/transfer-booking/api-reference
 type FlightOfferParams = {
 	originLocationCode: string;
 	destinationLocationCode: string;

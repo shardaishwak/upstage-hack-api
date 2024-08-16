@@ -11,12 +11,12 @@ const PORT = process.env.PORT || 5001;
 
 (async () => {
 	try {
-		await mongoose.connect(process.env.DATABASE_URI);
-		logger.log({
-			level: 'info',
-			message: `Connected to MongoDB`,
-			meta: 'database',
-		});
+		// await mongoose.connect(process.env.DATABASE_URI);
+		// logger.log({
+		// 	level: 'info',
+		// 	message: `Connected to MongoDB`,
+		// 	meta: 'database',
+		// });
 		// await initializeRedisClient();
 		app.listen(PORT, () => {
 			logger.log({

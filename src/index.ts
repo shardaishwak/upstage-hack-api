@@ -3,16 +3,11 @@ import app from './app';
 
 import dotenv from 'dotenv';
 import { logger } from './config/winston';
-import { Amadeus } from './app/amadeus';
+import amadeus from './config/amadeus';
 import { Server } from 'socket.io';
 import http from 'http';
 
 dotenv.config();
-
-const amadeus = new Amadeus(
-	process.env.AMADEUS_CLIENT_ID || '',
-	process.env.AMADEUS_CLIENT_SECRET || ''
-);
 
 const PORT = process.env.PORT || 5001;
 

@@ -1,15 +1,11 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import BodyParser from 'body-parser';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import { logger } from '../config/winston';
 import ErrorWithStatus from '../utils/ErrorWithStatus';
 import { upstage } from '../config/upstage';
-import {
-	ChatCompletionCreateParamsBase,
-	ChatCompletionMessageParam,
-} from 'openai/resources/chat/completions';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { availableFunctions, tools } from '../tools';
 
 const app: Application = express();
@@ -28,7 +24,7 @@ app.post('/webhook', BodyParser.raw({ type: 'application/json' }));
 
 app.use(BodyParser.json());
 
-const preferences = ['non-stop', 'direct', 'business'];
+const preferences = [];
 
 const messages: ChatCompletionMessageParam[] = [
 	{
@@ -37,7 +33,10 @@ const messages: ChatCompletionMessageParam[] = [
 			`,
 	},
 ];
+
 const handleChat = async (q: string) => {
+	const data = {};
+
 	messages.push({
 		role: 'user',
 		content: (q as string) + '. Preferences: ' + preferences.join(', '),
@@ -51,38 +50,32 @@ const handleChat = async (q: string) => {
 
 	const toolCalls = responseMessage.tool_calls;
 	if (toolCalls) {
+		console.log('[toolCalls]', toolCalls);
 		// Step 3: call the function
 		// Note: the JSON response may not always be valid; be sure to handle errors
 		messages.push(responseMessage); // extend conversation with assistant's reply
 		for (const toolCall of toolCalls) {
-			const functionName = toolCall.function
-				.name as (typeof tools)[number]['function']['name'];
+			const functionName = toolCall.function.name as keyof typeof availableFunctions;
 			const functionToCall = availableFunctions[functionName];
 			if (!functionToCall) {
 				throw new Error(`Function ${functionName} does not exist`);
 			}
 			const functionArgs = JSON.parse(toolCall.function.arguments);
-			const functionResponse = await functionToCall(functionArgs);
-			console.log(JSON.stringify(functionResponse, null, 2));
-			console.log(messages[0]);
-			messages.push({
-				tool_call_id: toolCall.id,
-				role: 'tool',
+			console.log('[functionArgs]', functionArgs);
 
-				content: JSON.stringify(functionResponse),
-			}); // extend conversation with function response
+			let functionResponse = await functionToCall(functionArgs);
+
+			data[functionName] = functionResponse;
+
+			// messages.push({
+			// 	tool_call_id: toolCall.id,
+			// 	role: 'tool',
+
+			// 	content: JSON.stringify(functionResponse),
+			// });
 		}
-
-		const secondResponse = await upstage.chat.completions.create({
-			model: 'solar-1-mini-chat',
-			messages: messages,
-		}); // get a new response from the model where it can see the function response
-
-		// I Want json format with only few fields inside it
-
-		return secondResponse;
 	}
-	return response;
+	return data;
 };
 
 app.get('/chat', async (req: Request, res: Response) => {
@@ -92,7 +85,9 @@ app.get('/chat', async (req: Request, res: Response) => {
 		return;
 	}
 
+	console.log('Starting chat');
 	const response = await handleChat(q as string);
+	console.log('Ending chat');
 	res.send(response);
 });
 

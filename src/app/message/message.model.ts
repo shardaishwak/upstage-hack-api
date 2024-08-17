@@ -18,6 +18,9 @@ const MessageSchema = new mongoose.Schema<IMessage>(
 			ref: 'User',
 			required: true,
 		},
+		googleId: {
+			type: String,
+		}
 	},
 	{ timestamps: true }
 );

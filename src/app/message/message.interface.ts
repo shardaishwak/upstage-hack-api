@@ -5,6 +5,7 @@ export interface IMessage {
 	text: string;
 	itinerary: IItinerary;
 	creator: IUser;
+	googleId: string;
 
 	createdAt: string;
 	updatedAt: string;

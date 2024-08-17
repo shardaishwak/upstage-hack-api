@@ -6,10 +6,14 @@ import { logger } from './config/winston';
 import amadeus from './config/amadeus';
 import { Server } from 'socket.io';
 import http from 'http';
+import { handleChat } from './chat';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 5001;
+
+// temporary cache for faster results
+const cache: Map<string, any> = new Map();
 
 (async () => {
 	try {
@@ -29,8 +33,26 @@ const PORT = process.env.PORT || 5001;
 			},
 		});
 
-		io.on('connect', (socket) => {
+		io.on('connect', async (socket) => {
 			console.log('New client connected:', socket.id);
+
+			// socket for handing chat system
+			socket.on('chat', async (message: string) => {
+				io.emit('chat:loading', true);
+
+				if (cache.has(message)) {
+					io.emit('chat', cache.get(message));
+					io.emit('chat:loading', false);
+					return;
+				}
+
+				// call the chat API system
+				const chatResponse = await handleChat(message);
+				cache.set(message, chatResponse);
+				io.emit('chat', chatResponse);
+
+				io.emit('chat:loading', false);
+			});
 
 			socket.on('message', (message) => {
 				console.log('Received message:', message);

@@ -41,6 +41,7 @@ const PORT = process.env.PORT || 5001;
 				console.log('Client disconnected:', socket.id);
 			});
 		});
+
 		// await initializeRedisClient();
 		server.listen(PORT, () => {
 			logger.log({

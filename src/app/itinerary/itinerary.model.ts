@@ -64,19 +64,23 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			default: {},
 		},
 		hotels: {
-			type: [Object],
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
 			default: [],
 		},
 		activities: {
-			type: [Object],
-			default: [],
-		},
-		sightseeing: {
-			type: [Object],
-			default: [],
-		},
-		restaurants: {
-			type: [Object],
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
 			default: [],
 		},
 	},

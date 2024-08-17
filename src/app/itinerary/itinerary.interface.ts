@@ -1,4 +1,5 @@
 import { FlightOffer$1 } from '../../types/amadeus';
+import { PointsOfInterest } from '../../types/mapbox';
 import { IUser } from '../user/user.interface';
 
 export type AmadeusFlightOffer = FlightOffer$1;
@@ -15,25 +16,7 @@ export interface AmadeusHotelOffer {
 	address: { countryCode: string };
 	lastUpdate: string;
 }
-export interface AmadeusActivityOffer {
-	type: string;
-	id: string;
-	self: {
-		href: string;
-		methods: string[];
-	};
-	name: string;
-	description: string;
-	geoCode: {
-		latitude: number;
-		longitude: number;
-	};
-	price: {
-		currencyCode?: string;
-	};
-	pictures: string[];
-	minimumDuration: string;
-}
+export type AmadeusActivityOffer = PointsOfInterest;
 
 export interface IItinerary {
 	title: string;
@@ -45,8 +28,6 @@ export interface IItinerary {
 	flight: AmadeusFlightOffer;
 	hotels: AmadeusHotelOffer[];
 	activities: AmadeusActivityOffer[];
-	sightseeing: any[];
-	restaurants: any[];
 
 	createdAt: string;
 	updatedAt: string;

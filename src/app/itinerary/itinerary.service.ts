@@ -1,8 +1,9 @@
+import { AmadeusFlightOffer } from './itinerary.interface';
 import { ItineraryModel } from './itinerary.model';
 
 export const itineraryServices = {
 	// itinerary service functions go here
-	saveFlight: async (id: string, flightData: any) => {
+	saveFlight: async (id: string, flightData: AmadeusFlightOffer) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			id,
 			{ flight: flightData },
@@ -26,25 +27,29 @@ export const itineraryServices = {
 		);
 		return itinerary;
 	},
-	saveSightseeing: async (id: string, sightseeingData: any) => {
-		const itinerary = await ItineraryModel.findByIdAndUpdate(
-			id,
-			{ $push: { sightseeing: sightseeingData } },
-			{ new: true }
-		);
-		return itinerary;
-	},
-	saveRestaurant: async (id: string, restaurantData: any) => {
-		const itinerary = await ItineraryModel.findByIdAndUpdate(
-			id,
-			{ $push: { restaurants: restaurantData } },
-			{ new: true }
-		);
-		return itinerary;
-	},
 
-	deleteFlight: async (id: string) => {
-		const itinerary = await ItineraryModel.findByIdAndUpdate(id, { flight: {} }, { new: true });
+	deleteFlight: async (itineraryId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ flight: {} },
+			{ new: true }
+		);
+		return itinerary;
+	},
+	deleteHotel: async (itineraryId: string, hotelId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $pull: { hotels: { _id: hotelId } } },
+			{ new: true }
+		);
+		return itinerary;
+	},
+	deleteActivity: async (itineraryId: string, activityId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $pull: { activities: { _id: activityId } } },
+			{ new: true }
+		);
 		return itinerary;
 	},
 };

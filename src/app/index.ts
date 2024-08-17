@@ -7,6 +7,12 @@ import ErrorWithStatus from '../utils/ErrorWithStatus';
 import { upstage } from '../config/upstage';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { availableFunctions, tools } from '../tools';
+import dotenv from 'dotenv';
+
+import authRoutes from './routes/auth';
+import messageRoutes from './routes/messages';
+
+dotenv.config();
 
 const app: Application = express();
 app.use(helmet());
@@ -20,9 +26,81 @@ app.use(
 );
 
 // TODO: Connect stripe webhook
-app.post('/webhook', BodyParser.raw({ type: 'application/json' }));
+app.post('/webhook', express.raw({ type: 'application/json' }));
 
-app.use(BodyParser.json());
+app.use(express.json());
+
+const preferences = [];
+
+const messages: ChatCompletionMessageParam[] = [
+	{
+		role: 'system',
+		content: `Your response to "content" should be a JSON format. It should include the following fields: type: "flight" | "accomodation" | "car_rental" | "activity",. for flight type: have the following properties: from, to, dates, passengers, preferences, price, class, currency, baggage, airline, apirports
+			`,
+	},
+];
+
+const handleChat = async (q: string) => {
+	const data = {};
+
+	messages.push({
+		role: 'user',
+		content: (q as string) + '. Preferences: ' + preferences.join(', '),
+	});
+	const response = await upstage.chat.completions.create({
+		model: 'solar-1-mini-chat',
+		messages,
+		tools: tools,
+	});
+	const responseMessage = response.choices[0].message;
+
+	const toolCalls = responseMessage.tool_calls;
+	if (toolCalls) {
+		console.log('[toolCalls]', toolCalls);
+		// Step 3: call the function
+		// Note: the JSON response may not always be valid; be sure to handle errors
+		messages.push(responseMessage); // extend conversation with assistant's reply
+		for (const toolCall of toolCalls) {
+			const functionName = toolCall.function.name as keyof typeof availableFunctions;
+			const functionToCall = availableFunctions[functionName];
+			if (!functionToCall) {
+				throw new Error(`Function ${functionName} does not exist`);
+			}
+			const functionArgs = JSON.parse(toolCall.function.arguments);
+			console.log('[functionArgs]', functionArgs);
+
+			let functionResponse = await functionToCall(functionArgs);
+
+			data[functionName] = functionResponse;
+
+			// messages.push({
+			// 	tool_call_id: toolCall.id,
+			// 	role: 'tool',
+
+			// 	content: JSON.stringify(functionResponse),
+			// });
+		}
+	}
+	return data;
+};
+
+
+
+app.get('/chat', async (req: Request, res: Response) => {
+	const q = req.query.q;
+	if (!q) {
+		res.status(400).send({ error: 'Query parameter "q" is required' });
+		return;
+	}
+
+	console.log('Starting chat');
+	const response = await handleChat(q as string);
+	console.log('Ending chat');
+	res.send(response);
+});
+
+app.use('/auth', authRoutes)
+app.use('/messages', messageRoutes)
 
 const preferences = [];
 

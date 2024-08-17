@@ -7,7 +7,10 @@ import ErrorWithStatus from '../utils/ErrorWithStatus';
 import { upstage } from '../config/upstage';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { availableFunctions, tools } from '../tools';
+import authRoutes from './routes/auth';
 
+
+dotenv.config();
 const app: Application = express();
 app.use(helmet());
 app.use(
@@ -78,6 +81,8 @@ const handleChat = async (q: string) => {
 	return data;
 };
 
+
+
 app.get('/chat', async (req: Request, res: Response) => {
 	const q = req.query.q;
 	if (!q) {
@@ -90,6 +95,8 @@ app.get('/chat', async (req: Request, res: Response) => {
 	console.log('Ending chat');
 	res.send(response);
 });
+
+app.use('/auth', authRoutes)
 
 /**
  * Any error that occurs in the application will be caught here

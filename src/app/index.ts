@@ -8,6 +8,7 @@ import { upstage } from '../config/upstage';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { availableFunctions, tools } from '../tools';
 import authRoutes from './routes/auth';
+import dotenv from 'dotenv';
 
 
 dotenv.config();

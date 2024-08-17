@@ -8,8 +8,6 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
   const { email, name, picture, sub } = req.body;
 
-  console.log('Received info about', email)
-
   try {
     // Check if the user already exists
     let user = await UserModel.findOne({ email });

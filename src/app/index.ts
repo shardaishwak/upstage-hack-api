@@ -7,11 +7,13 @@ import ErrorWithStatus from '../utils/ErrorWithStatus';
 import { upstage } from '../config/upstage';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { availableFunctions, tools } from '../tools';
-import authRoutes from './routes/auth';
 import dotenv from 'dotenv';
 
+import authRoutes from './routes/auth';
+import messageRoutes from './routes/messages';
 
 dotenv.config();
+
 const app: Application = express();
 app.use(helmet());
 app.use(
@@ -24,9 +26,9 @@ app.use(
 );
 
 // TODO: Connect stripe webhook
-app.post('/webhook', BodyParser.raw({ type: 'application/json' }));
+app.post('/webhook', express.raw({ type: 'application/json' }));
 
-app.use(BodyParser.json());
+app.use(express.json());
 
 const preferences = [];
 
@@ -98,6 +100,7 @@ app.get('/chat', async (req: Request, res: Response) => {
 });
 
 app.use('/auth', authRoutes)
+app.use('/messages', messageRoutes)
 
 /**
  * Any error that occurs in the application will be caught here

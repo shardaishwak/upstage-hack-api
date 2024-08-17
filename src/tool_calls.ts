@@ -1,7 +1,9 @@
 import amadeus, { customAmadeus } from './config/amadeus';
+import { Mapbox } from './lib/mapbox';
 import { MapUtilities } from './lib/mapUtilities';
 
 const mapUtilities = new MapUtilities(process.env.GEOLOCATION_API_KEY);
+const mapbox = new Mapbox(process.env.MAPBOX_PUBLIC_KEY, process.env.GEOLOCATION_API_KEY);
 
 export const flight_search_tool_function = async (params: any) => {
 	try {
@@ -46,8 +48,9 @@ export const activities_to_do_tool_function = async (params: any) => {
 
 export const point_of_interests_tool_function = async (params: any) => {
 	try {
-		const response = await customAmadeus.getPointsOfInterest(params);
-		return response.data;
+		// const response = await customAmadeus.getPointsOfInterest(params);
+		const response = await mapbox.getCategorySearch(params);
+		return response;
 	} catch (err) {
 		console.log(err?.response?.data);
 		return null;

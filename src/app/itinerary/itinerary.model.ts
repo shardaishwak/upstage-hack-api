@@ -59,6 +59,26 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			type: String,
 			required: true,
 		},
+		flight: {
+			type: Object,
+			default: {},
+		},
+		hotels: {
+			type: [Object],
+			default: [],
+		},
+		activities: {
+			type: [Object],
+			default: [],
+		},
+		sightseeing: {
+			type: [Object],
+			default: [],
+		},
+		restaurants: {
+			type: [Object],
+			default: [],
+		},
 	},
 	{ timestamps: true }
 );

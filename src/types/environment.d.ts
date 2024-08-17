@@ -9,5 +9,6 @@ declare namespace NodeJS {
 		STRIPE_API_SECRET_KEY: string;
 		UPSTAGE_API_KEY: string;
 		GEOLOCATION_API_KEY: string;
+		MAPBOX_PUBLIC_KEY: string;
 	}
 }

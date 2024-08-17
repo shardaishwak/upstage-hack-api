@@ -84,8 +84,6 @@ const handleChat = async (q: string) => {
 	return data;
 };
 
-
-
 app.get('/chat', async (req: Request, res: Response) => {
 	const q = req.query.q;
 	if (!q) {
@@ -99,8 +97,8 @@ app.get('/chat', async (req: Request, res: Response) => {
 	res.send(response);
 });
 
-app.use('/auth', authRoutes)
-app.use('/messages', messageRoutes)
+app.use('/auth', authRoutes);
+app.use('/messages', messageRoutes);
 
 const preferences = [];
 

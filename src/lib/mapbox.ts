@@ -510,6 +510,6 @@ export class Mapbox {
 			}
 		);
 
-		return response.data;
+		return response.data?.features;
 	}
 }

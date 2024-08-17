@@ -795,6 +795,6 @@ export const availableFunctions = {
 	flight_offer_search: flight_search_tool_function,
 	list_hotels_in_city: list_hotels_in_city_tool_function,
 	hotels_availability: hotels_availability_tool_function,
-	activities_to_do: activities_to_do_tool_function,
+	// activities_to_do: activities_to_do_tool_function,
 	points_of_interest: point_of_interests_tool_function,
 };

@@ -114,6 +114,7 @@ export const itineraryServices = {
 		const flightOffer = itinerary?.flight;
 
 		if (!flightOffer) throw new Error('No flight offers found');
+		console.log('flightOffer', flightOffer);
 		const itineraryConfirmationResult = await amadeus.shopping.flightOffers.pricing.post({
 			data: {
 				type: 'flight-offers-pricing',
@@ -121,7 +122,13 @@ export const itineraryServices = {
 			},
 		});
 
-		return itineraryConfirmationResult;
+		if (!itineraryConfirmationResult.data) throw new Error('No pricing data found');
+
+		// update itinerary with pricing data
+		itinerary.pricing = itineraryConfirmationResult.data;
+		await itinerary.save();
+
+		return itineraryConfirmationResult.data;
 	},
 	updateTravelerInfo: async (itineraryId: string, userId: string, travelerInfo: any) => {
 		const itinerary = await ItineraryModel.findOneAndUpdate(
@@ -152,76 +159,79 @@ export const itineraryServices = {
 				user.user?.email,
 				user.travelerInfo
 			);
-			results.push(res);
+			results.push(...res);
 		}
 
 		return results;
 	},
 	_checkAllTravelerFields: (email: string, travelerInfo: TravelerInfo) => {
-		if (!travelerInfo.dateOfBirth) return email + ':' + 'Date of birth is required';
+		const errors = [];
+		if (!travelerInfo?.dateOfBirth) errors.push(email + ':' + 'Date of birth is required');
 
-		if (!travelerInfo.name || !travelerInfo.name.firstName) return 'First name is required';
-		if (!travelerInfo.name.lastName) return email + ':' + 'Last name is required';
+		if (!travelerInfo.name || !travelerInfo.name?.firstName)
+			errors.push(email + ':' + 'First name is required');
+		if (!travelerInfo.name?.lastName) errors.push(email + ':' + 'Last name is required');
 
 		if (
-			!travelerInfo.gender ||
-			(travelerInfo.gender !== 'MALE' && travelerInfo.gender !== 'FEMALE')
+			!travelerInfo?.gender ||
+			(travelerInfo?.gender !== 'MALE' && travelerInfo?.gender !== 'FEMALE')
 		) {
-			return email + ':' + 'Gender is required and must be either MALE or FEMALE';
+			errors.push(email + ':' + 'Gender is required and must be either MALE or FEMALE');
 		}
 
-		if (!travelerInfo.contact || !travelerInfo.contact.emailAddress)
-			return email + ':' + 'Email address is required';
+		if (!travelerInfo.contact || !travelerInfo.contact?.emailAddress)
+			errors.push(email + ':' + 'Email address is required');
 		if (
-			!travelerInfo.contact.phones ||
-			!Array.isArray(travelerInfo.contact.phones) ||
-			travelerInfo.contact.phones.length === 0
+			!travelerInfo.contact?.phones ||
+			!Array.isArray(travelerInfo.contact?.phones) ||
+			travelerInfo.contact?.phones?.length === 0
 		) {
-			return email + ':' + 'At least one phone number is required';
+			errors.push(email + ':' + 'At least one phone number is required');
 		}
 
-		travelerInfo.contact.phones.forEach((phone, index) => {
-			if (!phone.deviceType || phone.deviceType !== 'MOBILE')
-				return email + ':' + `Phone ${index + 1}: deviceType must be MOBILE`;
+		travelerInfo.contact?.phones?.forEach((phone, index) => {
+			if (!phone.deviceType || phone?.deviceType !== 'MOBILE')
+				errors.push(email + ':' + `Phone ${index + 1}: deviceType must be MOBILE`);
 			if (!phone.countryCallingCode)
-				return email + ':' + `Phone ${index + 1}: country calling code is required`;
-			if (!phone.number) return email + ':' + `Phone ${index + 1}: phone number is required`;
+				errors.push(email + ':' + `Phone ${index + 1}: country calling code is required`);
+			if (!phone.number)
+				errors.push(email + ':' + `Phone ${index + 1}: phone number is required`);
 		});
 
 		if (
-			!travelerInfo.documents ||
+			!travelerInfo?.documents ||
 			!Array.isArray(travelerInfo.documents) ||
-			travelerInfo.documents.length === 0
+			travelerInfo.documents?.length === 0
 		) {
-			return email + ':' + 'At least one document is required';
+			errors.push(email + ':' + 'At least one document is required');
 		}
 
-		for (let i = 0; i < travelerInfo.documents.length; i++) {
+		for (let i = 0; i < travelerInfo?.documents?.length; i++) {
 			const document = travelerInfo.documents[i];
 			const index = i;
 
 			if (!document.documentType)
-				return email + ':' + `Document ${index + 1}: document type is required`;
+				errors.push(email + ':' + `Document ${index + 1}: document type is required`);
 			if (!document.birthPlace)
-				return email + ':' + `Document ${index + 1}: birth place is required`;
+				errors.push(email + ':' + `Document ${index + 1}: birth place is required`);
 			if (!document.issuanceLocation)
-				return email + ':' + `Document ${index + 1}: issuance location is required`;
+				errors.push(email + ':' + `Document ${index + 1}: issuance location is required`);
 			if (!document.issuanceDate)
-				return email + ':' + `Document ${index + 1}: issuance date is required`;
+				errors.push(email + ':' + `Document ${index + 1}: issuance date is required`);
 			if (!document.number)
-				return email + ':' + `Document ${index + 1}: document number is required`;
+				errors.push(email + ':' + `Document ${index + 1}: document number is required`);
 			if (!document.expiryDate)
-				return email + ':' + `Document ${index + 1}: expiry date is required`;
+				errors.push(email + ':' + `Document ${index + 1}: expiry date is required`);
 			if (!document.issuanceCountry)
-				return email + ':' + `Document ${index + 1}: issuance country is required`;
+				errors.push(email + ':' + `Document ${index + 1}: issuance country is required`);
 			if (!document.validityCountry)
-				return email + ':' + `Document ${index + 1}: validity country is required`;
+				errors.push(email + ':' + `Document ${index + 1}: validity country is required`);
 			if (!document.nationality)
-				return email + ':' + `Document ${index + 1}: nationality is required`;
+				errors.push(email + ':' + `Document ${index + 1}: nationality is required`);
 			if (typeof document.holder !== 'boolean')
-				return email + ':' + `Document ${index + 1}: holder must be a boolean value`;
+				errors.push(email + ':' + `Document ${index + 1}: holder must be a boolean value`);
 		}
 
-		return null;
+		return errors;
 	},
 };

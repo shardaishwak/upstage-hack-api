@@ -10,7 +10,7 @@ router.get('/user/:userId', itineraryController.getItinerariesByUser);
 
 router.post('/', itineraryController.createNewItinerary);
 
-router.post('/:id/confirm-pricing', itineraryController.addNewMember);
+router.post('/:id/confirm-pricing', itineraryController.confirmPricing);
 
 router.get('/:id/check-travelers-info', itineraryController.checkTravelerInfo);
 
@@ -28,6 +28,6 @@ router.delete('/:id/hotel/:hotelId', itineraryController.deleteHotel);
 
 router.delete('/:id/activity/:activityId', itineraryController.deleteActivity);
 
-router.put('/itinerary/:id/user/:userId', itineraryController.updateTravelerInfo); // add travel info
+router.put('/:id/user/:userId', itineraryController.updateTravelerInfo); // add travel info
 
 export const itineraryRouter = router;

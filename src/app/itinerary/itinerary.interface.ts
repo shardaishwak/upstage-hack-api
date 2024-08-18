@@ -24,6 +24,8 @@ export interface IItinerary {
 	users: ItineraryUser[];
 	content: ItineraryContent[];
 
+	pricing: any;
+
 	flight?: AmadeusFlightOffer;
 	hotels: AmadeusHotelOffer[];
 	activities: AmadeusActivityOffer[];

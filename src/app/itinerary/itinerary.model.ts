@@ -81,6 +81,10 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			],
 			default: [],
 		},
+		pricing: {
+			type: Object,
+			default: {},
+		},
 	},
 	{ timestamps: true }
 );

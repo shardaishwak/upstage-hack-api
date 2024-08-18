@@ -27,8 +27,12 @@ export const itineraryController = {
 	},
 	getItinerariesByUser: async (req: Request, res: Response, next: NextFunction) => {
 		try {
+			const user = await UserModel.findOne({ 'provider.id': req.params.userId });
+			if (!user) {
+				throw new Error('User not found');
+			}
 			// get itineraries by user
-			const response = await itineraryServices.getItineraries(req.params.userId);
+			const response = await itineraryServices.getItineraries(user.id);
 			res.send(response);
 		} catch (error) {
 			next(error);
@@ -89,6 +93,19 @@ export const itineraryController = {
 				req.params.id,
 				req.params.activityId
 			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+	addNewMember: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const user = await UserModel.findOne({ 'provider.id': req.body.userId });
+			if (!user) {
+				throw new Error('User not found');
+			}
+			// add new member to itinerary
+			const response = await itineraryServices.addNewMember(req.params.id, user.id);
 			res.send(response);
 		} catch (error) {
 			next(error);

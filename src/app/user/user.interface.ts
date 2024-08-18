@@ -1,6 +1,7 @@
+import mongoose from 'mongoose';
 import { IItinerary } from '../itinerary/itinerary.interface';
 
-export interface IUser {
+export interface IUser extends mongoose.Document {
 	email: string;
 	provider: {
 		name: string;

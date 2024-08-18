@@ -15,6 +15,7 @@ export const itineraryServices = {
 		});
 		return itinerary;
 	},
+
 	getItinerary: async (id: string) => {
 		const itinerary = await ItineraryModel.findById(id)
 			.populate('users.user')
@@ -22,9 +23,33 @@ export const itineraryServices = {
 		return itinerary;
 	},
 
+	addNewMember: async (itineraryId: string, userId: string) => {
+		// check if the user is already a member
+		let itinerary = await ItineraryModel.findById(itineraryId);
+		const isMember = itinerary?.users.some((user) => user.toString() === userId);
+
+		if (isMember) {
+			return itinerary;
+		}
+
+		itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{
+				$push: {
+					users: {
+						user: userId,
+						preferences: [],
+					},
+				},
+			},
+			{ new: true }
+		);
+		return itinerary;
+	},
+
 	getItineraries: async (userId: string) => {
 		const itineraries = await ItineraryModel.find({
-			users: { $in: [userId] },
+			users: { $in: [{ user: userId }] },
 		});
 
 		return itineraries;

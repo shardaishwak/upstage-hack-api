@@ -6,11 +6,13 @@ const router = express.Router();
 
 router.get('/:id', itineraryController.getItinerary);
 
-router.get('/:userId', itineraryController.getItinerariesByUser);
+router.get('/user/:userId', itineraryController.getItinerariesByUser);
 
 router.post('/', itineraryController.createNewItinerary);
 
 router.post('/:id/flight', itineraryController.saveFlight);
+
+router.post('/:id/new-member', itineraryController.addNewMember);
 
 router.post('/:id/hotel', itineraryController.saveHotel);
 

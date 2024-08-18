@@ -387,6 +387,7 @@ const points_of_interest: ChatCompletionTool = {
 						'mexican_restaurant',
 						'temple',
 						'car_rental',
+						'hotel',
 						'monument',
 						'vacation_rental',
 						'gift_shop',
@@ -786,8 +787,8 @@ const points_of_interest: ChatCompletionTool = {
 
 export const tools: ChatCompletionTool[] = [
 	flight_offer_search,
-	list_hotels_in_city,
-	hotels_availability,
+	// list_hotels_in_city,
+	// hotels_availability,
 	// activities_to_do,
 	points_of_interest,
 ];

@@ -47,7 +47,7 @@ const cache: Map<string, any> = new Map();
 				}
 
 				// call the chat API system
-				const chatResponse = await handleChat(message);
+				const chatResponse = await handleChat(message, io);
 				cache.set(message, chatResponse);
 				io.emit('chat', chatResponse);
 

@@ -9,7 +9,7 @@ export const handleChat = async (q: string) => {
 	const messages: ChatCompletionMessageParam[] = [
 		{
 			role: 'system',
-			content: `Your response to "content" should be a JSON format. It should include the following fields: type: "flight" | "accomodation" | "car_rental" | "activity",. for flight type: have the following properties: from, to, dates, passengers, preferences, price, class, currency, baggage, airline, apirports
+			content: `For flights, show only 5 results. When showing activities, show at least 15
                 `,
 		},
 	];

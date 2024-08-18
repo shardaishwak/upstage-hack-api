@@ -22,6 +22,8 @@ router.post('/:id/hotel', itineraryController.saveHotel);
 
 router.post('/:id/activity', itineraryController.saveActivity);
 
+router.post('/:id/book', itineraryController.bookItinerary);
+
 router.delete('/:id/flight', itineraryController.deleteFlight);
 
 router.delete('/:id/hotel/:hotelId', itineraryController.deleteHotel);

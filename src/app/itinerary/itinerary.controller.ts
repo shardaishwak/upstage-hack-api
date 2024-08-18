@@ -145,7 +145,15 @@ export const itineraryController = {
 			);
 			res.send(response);
 		} catch (error) {
-			next(error);
+			return next(error);
+		}
+	},
+	bookItinerary: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.bookItinerary(req.params.id);
+			res.send(response);
+		} catch (error) {
+			return next(error);
 		}
 	},
 };

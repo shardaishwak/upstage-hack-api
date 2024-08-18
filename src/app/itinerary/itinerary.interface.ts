@@ -24,6 +24,9 @@ export interface IItinerary {
 	users: ItineraryUser[];
 	content: ItineraryContent[];
 
+	isBooked: boolean;
+	booking: any;
+
 	pricing: any;
 
 	flight?: AmadeusFlightOffer;

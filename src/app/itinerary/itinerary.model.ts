@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IItinerary, ItineraryContent, ItineraryType } from './itinerary.interface';
+import { IItinerary, ItineraryContent, ItineraryType, ItineraryUser } from './itinerary.interface';
 import { Model } from '../../utils/model';
 
 const ItineraryContentSchema = new mongoose.Schema<ItineraryContent>({
@@ -18,7 +18,7 @@ const ItineraryContentSchema = new mongoose.Schema<ItineraryContent>({
 	},
 });
 
-const ItineraryUserSchema = new mongoose.Schema(
+const ItineraryUserSchema = new mongoose.Schema<ItineraryUser>(
 	{
 		user: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -28,6 +28,10 @@ const ItineraryUserSchema = new mongoose.Schema(
 		preferences: {
 			type: [String],
 			default: [],
+		},
+		travelerInfo: {
+			type: Object,
+			default: {},
 		},
 	},
 	{ _id: false }

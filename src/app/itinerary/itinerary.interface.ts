@@ -24,7 +24,7 @@ export interface IItinerary {
 	users: IUser[];
 	content: ItineraryContent[];
 
-	flight: AmadeusFlightOffer;
+	flight?: AmadeusFlightOffer;
 	hotels: AmadeusHotelOffer[];
 	activities: AmadeusActivityOffer[];
 
@@ -48,4 +48,30 @@ export type ItineraryContent = {
 export type ItineraryUser = {
 	preferences: string[];
 	user: IUser;
+	travelerInfo?: TravelerInfo;
+};
+
+export type TravelerInfo = {
+	dateOfBirth: string;
+	name: {
+		firstName: string;
+		lastName: string;
+	};
+	gender: 'MALE' | 'FEMALE';
+	contact: {
+		emailAddress: string;
+		phones: { deviceType: 'MOBILE'; countryCallingCode: string; number: string }[];
+	};
+	documents: {
+		documentType: 'PASSPORT' | 'ID_CARD' | 'VISA' | 'OTHER';
+		birthPlace: string;
+		issuanceLocation: string;
+		issuanceDate: string;
+		number: string;
+		expiryDate: string;
+		issuanceCountry: string;
+		validityCountry: string;
+		nationality: string;
+		holder: boolean;
+	}[];
 };

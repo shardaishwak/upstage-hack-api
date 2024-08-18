@@ -1,3 +1,4 @@
+import amadeus from '../../config/amadeus';
 import { AmadeusFlightOffer } from './itinerary.interface';
 import { ItineraryModel } from './itinerary.model';
 
@@ -104,5 +105,20 @@ export const itineraryServices = {
 		);
 		return itinerary;
 	},
-	confirmPricing: async (itineraryId: string) => {},
+	confirmPricing: async (itineraryId: string) => {
+		const itinerary = await ItineraryModel.findById(itineraryId)
+			.populate('admin')
+			.populate('users.user');
+
+		if (!itinerary) throw new Error('Itinerary not found');
+		const flightOffer = itinerary?.flight;
+
+		if (!flightOffer) throw new Error('No flight offers found');
+		const itineraryConfirmationResult = await amadeus.shopping.flightOffers.pricing.post({
+			data: {
+				type: 'flight-offers-pricing',
+				flightOffers: [flightOffer],
+			},
+		});
+	},
 };

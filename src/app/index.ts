@@ -104,43 +104,98 @@ app.get('/chat', async (req: Request, res: Response) => {
 	res.send(response);
 });
 
+const translationMessages: ChatCompletionMessageParam[] = [
+	
+];
+
+const handleTranslationChat = async (q: string, direction: 'koen' | 'enko') => {
+	translationMessages.push({
+	  role: 'user',
+	  content: q as string,
+	});
+
+	console.log(direction)
+	
+	const model = direction === 'koen' ? 'solar-1-mini-translate-koen' : 'solar-1-mini-translate-enko';
+	console.log('model', model);
+	
+	const response = await upstage.chat.completions.create({
+	  model: model,
+	  messages: translationMessages,
+	});
+	
+	const responseMessage = response.choices[0]?.message;
+	
+	if (responseMessage) {
+	  translationMessages.push(responseMessage); // Add assistant's response to messages array
+	  return translationMessages;
+	} else {
+	  throw new Error('Translation failed.');
+	}
+  };
+  
+
+  app.get('/translation', async (req: Request, res: Response) => {
+	const q = req.query.q;
+	const direction = req.query.direction;
+
+	console.log('q', q);
+
+
+  
+	if (!q) {
+	  res.status(400).send({ error: 'Query parameter "q" is required' });
+	  return;
+	}
+  
+	if (!direction) {
+	  res.status(400).send({ error: 'Query parameter "direction" is required' });
+	  return;
+	}
+  
+	console.log('Starting translation chat');
+	const response = await handleTranslationChat(q as string, direction as 'koen' | 'enko');
+	console.log('Ending translation chat');
+	res.send(response);
+  });
+  
+
+
+
 const extractPassportInfo = (ocrData: any) => {
-    const extractedInfo: Record<string, string> = {};
+	const extractedInfo: Record<string, string> = {};
 
-    // Flatten all text from OCR response to increase flexibility in pattern matching
-    const text = ocrData.pages.map((page: any) => page.text).join('\n');
+	// Flatten all text from OCR response to increase flexibility in pattern matching
+	const text = ocrData.pages.map((page: any) => page.text).join('\n');
 
-    // Split the text into lines for more precise processing
-    const lines = text.split('\n').map(line => line.trim());
+	// Split the text into lines for more precise processing
+	const lines = text.split('\n').map((line) => line.trim());
 
-    // Iterate over lines and use context-based extraction
-    lines.forEach((line, index) => {
-        if (line.includes('Passport No') || line.includes('PP CAN')) {
-            extractedInfo.passportNumber = line.split(' ').pop() || '';
-        } else if (line.match(/surname|nom/i)) {
-            extractedInfo.surname = lines[index + 1]?.trim() || ''; // Surname often follows the label
-        } else if (line.match(/given names|prenoms/i)) {
-            extractedInfo.givenNames = lines[index + 1]?.trim() || ''; // Given names often follow the label
-        } else if (line.match(/nationality|nationalité/i)) {
-            extractedInfo.nationality = lines[index + 1]?.trim() || ''; // Nationality often follows the label
-        } else if (line.match(/date of birth|date de naissance/i)) {
-            extractedInfo.dateOfBirth = lines[index + 1]?.trim() || ''; // DOB often follows the label
-        } else if (line.match(/place of birth|lieu de naissance/i)) {
-            extractedInfo.placeOfBirth = lines[index + 1]?.trim() || ''; // Place of birth often follows the label
-        } else if (line.match(/date of issue|date de délivrance/i)) {
-            extractedInfo.dateOfIssue = lines[index + 1]?.trim() || ''; // Date of issue often follows the label
-        } else if (line.match(/date of expiry|date d'expiration/i)) {
-            extractedInfo.dateOfExpiry = lines[index + 1]?.trim() || ''; // Date of expiry often follows the label
-        } else if (line.match(/authority|autorité/i)) {
-            extractedInfo.authority = lines[index + 1]?.trim() || ''; // Authority often follows the label
-        }
-    });
+	// Iterate over lines and use context-based extraction
+	lines.forEach((line, index) => {
+		if (line.includes('Passport No') || line.includes('PP CAN')) {
+			extractedInfo.passportNumber = line.split(' ').pop() || '';
+		} else if (line.match(/surname|nom/i)) {
+			extractedInfo.surname = lines[index + 1]?.trim() || ''; // Surname often follows the label
+		} else if (line.match(/given names|prenoms/i)) {
+			extractedInfo.givenNames = lines[index + 1]?.trim() || ''; // Given names often follow the label
+		} else if (line.match(/nationality|nationalité/i)) {
+			extractedInfo.nationality = lines[index + 1]?.trim() || ''; // Nationality often follows the label
+		} else if (line.match(/date of birth|date de naissance/i)) {
+			extractedInfo.dateOfBirth = lines[index + 1]?.trim() || ''; // DOB often follows the label
+		} else if (line.match(/place of birth|lieu de naissance/i)) {
+			extractedInfo.placeOfBirth = lines[index + 1]?.trim() || ''; // Place of birth often follows the label
+		} else if (line.match(/date of issue|date de délivrance/i)) {
+			extractedInfo.dateOfIssue = lines[index + 1]?.trim() || ''; // Date of issue often follows the label
+		} else if (line.match(/date of expiry|date d'expiration/i)) {
+			extractedInfo.dateOfExpiry = lines[index + 1]?.trim() || ''; // Date of expiry often follows the label
+		} else if (line.match(/authority|autorité/i)) {
+			extractedInfo.authority = lines[index + 1]?.trim() || ''; // Authority often follows the label
+		}
+	});
 
-    return extractedInfo;
+	return extractedInfo;
 };
-
-
-
 
 const upload = multer({ dest: 'uploads/' });
 

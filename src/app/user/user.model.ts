@@ -27,17 +27,7 @@ const UserSchema = new mongoose.Schema<IUser>(
 			type: String,
 			required: true,
 		},
-		itineraries: {
-			type: [
-				{
-					type: mongoose.Schema.Types.ObjectId,
-					ref: Model.ITINERARY,
-					_id: false,
-				},
-			],
-			default: [],
-			_id: false,
-		},
+
 		preferences: {
 			type: [String],
 			required: true,

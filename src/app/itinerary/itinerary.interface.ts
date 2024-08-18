@@ -23,7 +23,6 @@ export interface IItinerary {
 	admin: IUser;
 	users: IUser[];
 	content: ItineraryContent[];
-	posterImage: string;
 
 	flight: AmadeusFlightOffer;
 	hotels: AmadeusHotelOffer[];
@@ -47,7 +46,6 @@ export type ItineraryContent = {
 };
 
 export type ItineraryUser = {
-	budget: number;
 	preferences: string[];
-	currency: string;
+	user: IUser;
 };

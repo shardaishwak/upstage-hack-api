@@ -9,7 +9,6 @@ export interface IUser {
 	name: string;
 	image: string;
 
-	itineraries: IItinerary[];
 	preferences: string[];
 
 	createdAt: string;

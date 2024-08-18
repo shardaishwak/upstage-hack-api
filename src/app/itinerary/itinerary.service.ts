@@ -2,8 +2,23 @@ import { AmadeusFlightOffer } from './itinerary.interface';
 import { ItineraryModel } from './itinerary.model';
 
 export const itineraryServices = {
+	create: async (userId: string, title: string) => {
+		const itinerary = await ItineraryModel.create({
+			title,
+			admin: userId,
+			users: [
+				{
+					user: userId,
+					preferences: [],
+				},
+			],
+		});
+		return itinerary;
+	},
 	getItinerary: async (id: string) => {
-		const itinerary = await ItineraryModel.findById(id);
+		const itinerary = await ItineraryModel.findById(id)
+			.populate('users.user')
+			.populate('admin');
 		return itinerary;
 	},
 

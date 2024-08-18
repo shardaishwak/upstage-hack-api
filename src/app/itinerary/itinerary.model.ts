@@ -20,17 +20,14 @@ const ItineraryContentSchema = new mongoose.Schema<ItineraryContent>({
 
 const ItineraryUserSchema = new mongoose.Schema(
 	{
-		budget: {
-			type: Number,
+		user: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: Model.USER,
 			required: true,
 		},
 		preferences: {
 			type: [String],
 			default: [],
-		},
-		currency: {
-			type: String,
-			required: true,
 		},
 	},
 	{ _id: false }
@@ -55,10 +52,7 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			type: [ItineraryContentSchema],
 			default: [],
 		},
-		posterImage: {
-			type: String,
-			required: true,
-		},
+
 		flight: {
 			type: Object,
 			default: {},

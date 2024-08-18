@@ -1,7 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
 import { itineraryServices } from './itinerary.service';
+import { UserModel } from '../user/user.model';
 
 export const itineraryController = {
+	createNewItinerary: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const user = await UserModel.findOne({ 'provider.id': req.body.userId });
+			if (!user) {
+				throw new Error('User not found');
+			}
+			// create new itinerary
+			const response = await itineraryServices.create(user.id, req.body.title);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
 	getItinerary: async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			// get itinerary data

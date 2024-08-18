@@ -8,6 +8,8 @@ router.get('/:id', itineraryController.getItinerary);
 
 router.get('/:userId', itineraryController.getItinerariesByUser);
 
+router.post('/', itineraryController.createNewItinerary);
+
 router.post('/:id/flight', itineraryController.saveFlight);
 
 router.post('/:id/hotel', itineraryController.saveHotel);

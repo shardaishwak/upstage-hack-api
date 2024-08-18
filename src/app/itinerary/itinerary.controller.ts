@@ -111,4 +111,41 @@ export const itineraryController = {
 			next(error);
 		}
 	},
+	updateTravelerInfo: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const user = await UserModel.findOne({ 'provider.id': req.params.userId });
+			if (!user) {
+				throw new Error('User not found');
+			}
+
+			const travelerInfo = req.body.travelerInfo;
+			// update traveler info
+			const response = await itineraryServices.updateTravelerInfo(
+				req.params.id,
+				user.id,
+				travelerInfo
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+	confirmPricing: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.confirmPricing(req.params.id);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+	checkTravelerInfo: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.checkIfAllTravelerInfoIsProvided(
+				req.params.id
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
 };

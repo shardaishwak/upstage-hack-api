@@ -21,7 +21,7 @@ export type AmadeusActivityOffer = PointsOfInterest;
 export interface IItinerary {
 	title: string;
 	admin: IUser;
-	users: IUser[];
+	users: ItineraryUser[];
 	content: ItineraryContent[];
 
 	flight?: AmadeusFlightOffer;

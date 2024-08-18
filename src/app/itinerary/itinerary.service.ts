@@ -143,47 +143,49 @@ export const itineraryServices = {
 
 		if (!itinerary) throw new Error('Itinerary not found');
 		const users = itinerary.users;
+
+		const results = [];
 		for (const user of users) {
 			if (!user.travelerInfo) throw new Error('Traveler info is missing');
 
-			itineraryServices._checkAllTravelerFields(user.user?.email, user.travelerInfo);
+			const res = itineraryServices._checkAllTravelerFields(
+				user.user?.email,
+				user.travelerInfo
+			);
+			results.push(res);
 		}
 
-		return true;
+		return results;
 	},
 	_checkAllTravelerFields: (email: string, travelerInfo: TravelerInfo) => {
-		if (!travelerInfo.dateOfBirth) throw new Error(email + ':' + 'Date of birth is required');
+		if (!travelerInfo.dateOfBirth) return email + ':' + 'Date of birth is required';
 
-		if (!travelerInfo.name || !travelerInfo.name.firstName)
-			throw new Error('First name is required');
-		if (!travelerInfo.name.lastName) throw new Error(email + ':' + 'Last name is required');
+		if (!travelerInfo.name || !travelerInfo.name.firstName) return 'First name is required';
+		if (!travelerInfo.name.lastName) return email + ':' + 'Last name is required';
 
 		if (
 			!travelerInfo.gender ||
 			(travelerInfo.gender !== 'MALE' && travelerInfo.gender !== 'FEMALE')
 		) {
-			throw new Error(email + ':' + 'Gender is required and must be either MALE or FEMALE');
+			return email + ':' + 'Gender is required and must be either MALE or FEMALE';
 		}
 
 		if (!travelerInfo.contact || !travelerInfo.contact.emailAddress)
-			throw new Error(email + ':' + 'Email address is required');
+			return email + ':' + 'Email address is required';
 		if (
 			!travelerInfo.contact.phones ||
 			!Array.isArray(travelerInfo.contact.phones) ||
 			travelerInfo.contact.phones.length === 0
 		) {
-			throw new Error(email + ':' + 'At least one phone number is required');
+			return email + ':' + 'At least one phone number is required';
 		}
 
 		travelerInfo.contact.phones.forEach((phone, index) => {
 			if (!phone.deviceType || phone.deviceType !== 'MOBILE')
-				throw new Error(email + ':' + `Phone ${index + 1}: deviceType must be MOBILE`);
+				return email + ':' + `Phone ${index + 1}: deviceType must be MOBILE`;
 			if (!phone.countryCallingCode)
-				throw new Error(
-					email + ':' + `Phone ${index + 1}: country calling code is required`
-				);
-			if (!phone.number)
-				throw new Error(email + ':' + `Phone ${index + 1}: phone number is required`);
+				return email + ':' + `Phone ${index + 1}: country calling code is required`;
+			if (!phone.number) return email + ':' + `Phone ${index + 1}: phone number is required`;
 		});
 
 		if (
@@ -191,38 +193,35 @@ export const itineraryServices = {
 			!Array.isArray(travelerInfo.documents) ||
 			travelerInfo.documents.length === 0
 		) {
-			throw new Error(email + ':' + 'At least one document is required');
+			return email + ':' + 'At least one document is required';
 		}
 
-		travelerInfo.documents.forEach((document, index) => {
+		for (let i = 0; i < travelerInfo.documents.length; i++) {
+			const document = travelerInfo.documents[i];
+			const index = i;
+
 			if (!document.documentType)
-				throw new Error(email + ':' + `Document ${index + 1}: document type is required`);
+				return email + ':' + `Document ${index + 1}: document type is required`;
 			if (!document.birthPlace)
-				throw new Error(email + ':' + `Document ${index + 1}: birth place is required`);
+				return email + ':' + `Document ${index + 1}: birth place is required`;
 			if (!document.issuanceLocation)
-				throw new Error(
-					email + ':' + `Document ${index + 1}: issuance location is required`
-				);
+				return email + ':' + `Document ${index + 1}: issuance location is required`;
 			if (!document.issuanceDate)
-				throw new Error(email + ':' + `Document ${index + 1}: issuance date is required`);
+				return email + ':' + `Document ${index + 1}: issuance date is required`;
 			if (!document.number)
-				throw new Error(email + ':' + `Document ${index + 1}: document number is required`);
+				return email + ':' + `Document ${index + 1}: document number is required`;
 			if (!document.expiryDate)
-				throw new Error(email + ':' + `Document ${index + 1}: expiry date is required`);
+				return email + ':' + `Document ${index + 1}: expiry date is required`;
 			if (!document.issuanceCountry)
-				throw new Error(
-					email + ':' + `Document ${index + 1}: issuance country is required`
-				);
+				return email + ':' + `Document ${index + 1}: issuance country is required`;
 			if (!document.validityCountry)
-				throw new Error(
-					email + ':' + `Document ${index + 1}: validity country is required`
-				);
+				return email + ':' + `Document ${index + 1}: validity country is required`;
 			if (!document.nationality)
-				throw new Error(email + ':' + `Document ${index + 1}: nationality is required`);
+				return email + ':' + `Document ${index + 1}: nationality is required`;
 			if (typeof document.holder !== 'boolean')
-				throw new Error(
-					email + ':' + `Document ${index + 1}: holder must be a boolean value`
-				);
-		});
+				return email + ':' + `Document ${index + 1}: holder must be a boolean value`;
+		}
+
+		return null;
 	},
 };

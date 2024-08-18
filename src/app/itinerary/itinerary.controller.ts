@@ -143,7 +143,7 @@ export const itineraryController = {
 			const response = await itineraryServices.checkIfAllTravelerInfoIsProvided(
 				req.params.id
 			);
-			res.send(response);
+			res.send({ success: response });
 		} catch (error) {
 			next(error);
 		}

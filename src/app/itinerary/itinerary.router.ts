@@ -12,7 +12,7 @@ router.post('/', itineraryController.createNewItinerary);
 
 router.post('/:id/confirm-pricing', itineraryController.addNewMember);
 
-router.post('/:id/check-traveler-info', itineraryController.checkTravelerInfo);
+router.get('/:id/check-travelers-info', itineraryController.checkTravelerInfo);
 
 router.post('/:id/flight', itineraryController.saveFlight);
 

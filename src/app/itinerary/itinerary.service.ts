@@ -57,6 +57,7 @@ export const itineraryServices = {
 					user: userId,
 				},
 			},
+			isBooked: false,
 		});
 
 		return itineraries;
@@ -349,6 +350,25 @@ export const itineraryServices = {
 
 		await itinerary.save();
 
+		return itinerary;
+	},
+
+	getUserBookings: async (userId: string) => {
+		const itineraries = await ItineraryModel.find({
+			users: {
+				$elemMatch: {
+					user: userId,
+				},
+			},
+			isBooked: true,
+		});
+
+		return itineraries;
+	},
+	getBooking: async (bookingId: string) => {
+		const itinerary = await ItineraryModel.findOne({ 'booking.referenceId': bookingId })
+			.populate('admin')
+			.populate('users.user');
 		return itinerary;
 	},
 };

@@ -156,4 +156,24 @@ export const itineraryController = {
 			return next(error);
 		}
 	},
+	getUserBookings: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const user = await UserModel.findOne({ 'provider.id': req.params.userId });
+			if (!user) {
+				throw new Error('User not found');
+			}
+			const response = await itineraryServices.getUserBookings(user.id);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getbooking: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.getBooking(req.params.id);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
 };

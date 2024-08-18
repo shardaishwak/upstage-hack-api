@@ -4,7 +4,7 @@ import BodyParser from 'body-parser';
 import helmet from 'helmet';
 import { logger } from '../config/winston';
 import ErrorWithStatus from '../utils/ErrorWithStatus';
-import { upstage, upstageOCR } from '../config/upstage';
+import { upstage } from '../config/upstage';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { availableFunctions, tools } from '../tools';
 import dotenv from 'dotenv';
@@ -17,6 +17,7 @@ import axios from 'axios';
 import fs from 'fs';
 import FormData from 'form-data';
 import { handleChat } from '../chat';
+import { itineraryRouter } from './itinerary/itinerary.router';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/messages', messageRoutes);
+app.use('/itinerary', itineraryRouter);
 
 app.get('/chat', async (req: Request, res: Response) => {
 	const q = req.query.q;
@@ -52,63 +54,56 @@ app.get('/chat', async (req: Request, res: Response) => {
 	res.send(response);
 });
 
-const translationMessages: ChatCompletionMessageParam[] = [
-	
-];
+const translationMessages: ChatCompletionMessageParam[] = [];
 
 const handleTranslationChat = async (q: string, direction: 'koen' | 'enko') => {
 	translationMessages.push({
-	  role: 'user',
-	  content: q as string,
+		role: 'user',
+		content: q as string,
 	});
 
-	console.log(direction)
-	
-	const model = direction === 'koen' ? 'solar-1-mini-translate-koen' : 'solar-1-mini-translate-enko';
+	console.log(direction);
+
+	const model =
+		direction === 'koen' ? 'solar-1-mini-translate-koen' : 'solar-1-mini-translate-enko';
 	console.log('model', model);
-	
-	const response = await upstage.chat.completions.create({
-	  model: model,
-	  messages: translationMessages,
-	});
-	
-	const responseMessage = response.choices[0]?.message;
-	
-	if (responseMessage) {
-	  translationMessages.push(responseMessage); // Add assistant's response to messages array
-	  return translationMessages;
-	} else {
-	  throw new Error('Translation failed.');
-	}
-  };
-  
 
-  app.get('/translation', async (req: Request, res: Response) => {
+	const response = await upstage.chat.completions.create({
+		model: model,
+		messages: translationMessages,
+	});
+
+	const responseMessage = response.choices[0]?.message;
+
+	if (responseMessage) {
+		translationMessages.push(responseMessage); // Add assistant's response to messages array
+		return translationMessages;
+	} else {
+		throw new Error('Translation failed.');
+	}
+};
+
+app.get('/translation', async (req: Request, res: Response) => {
 	const q = req.query.q;
 	const direction = req.query.direction;
 
 	console.log('q', q);
 
-
-  
 	if (!q) {
-	  res.status(400).send({ error: 'Query parameter "q" is required' });
-	  return;
+		res.status(400).send({ error: 'Query parameter "q" is required' });
+		return;
 	}
-  
+
 	if (!direction) {
-	  res.status(400).send({ error: 'Query parameter "direction" is required' });
-	  return;
+		res.status(400).send({ error: 'Query parameter "direction" is required' });
+		return;
 	}
-  
+
 	console.log('Starting translation chat');
 	const response = await handleTranslationChat(q as string, direction as 'koen' | 'enko');
 	console.log('Ending translation chat');
 	res.send(response);
-  });
-  
-
-
+});
 
 const extractPassportInfo = (ocrData: any) => {
 	const extractedInfo: Record<string, string> = {};

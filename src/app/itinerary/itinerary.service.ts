@@ -2,6 +2,18 @@ import { AmadeusFlightOffer } from './itinerary.interface';
 import { ItineraryModel } from './itinerary.model';
 
 export const itineraryServices = {
+	getItinerary: async (id: string) => {
+		const itinerary = await ItineraryModel.findById(id);
+		return itinerary;
+	},
+
+	getItineraries: async (userId: string) => {
+		const itineraries = await ItineraryModel.find({
+			users: { $in: [userId] },
+		});
+
+		return itineraries;
+	},
 	// itinerary service functions go here
 	saveFlight: async (id: string, flightData: AmadeusFlightOffer) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
@@ -52,4 +64,5 @@ export const itineraryServices = {
 		);
 		return itinerary;
 	},
+	confirmPricing: async (itineraryId: string) => {},
 };

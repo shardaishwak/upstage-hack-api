@@ -1,3 +1,4 @@
+import axios from 'axios';
 import amadeus, { customAmadeus } from './config/amadeus';
 import { Mapbox } from './lib/mapbox';
 import { MapUtilities } from './lib/mapUtilities';
@@ -8,6 +9,24 @@ const mapbox = new Mapbox(process.env.MAPBOX_PUBLIC_KEY, process.env.GEOLOCATION
 export const flight_search_tool_function = async (params: any) => {
 	try {
 		const response = await amadeus.shopping.flightOffersSearch.get(params);
+		return response.data;
+	} catch (err) {
+		console.log(err?.response?.data);
+		return null;
+	}
+};
+
+export const google_flight_tool_function = async (params: any) => {
+	try {
+		const response = await axios.get('https://serpapi.com/search.json?engine=google_flights', {
+			params: {
+				...params,
+				api_key: process.env.SERPAPI_ACCESS_TOKEN,
+			},
+		});
+
+		console.log(response.data);
+
 		return response.data;
 	} catch (err) {
 		console.log(err?.response?.data);

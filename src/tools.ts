@@ -2,90 +2,161 @@ import { ChatCompletionTool } from 'openai/resources';
 import {
 	activities_to_do_tool_function,
 	flight_search_tool_function,
+	google_flight_tool_function,
 	hotels_availability_tool_function,
 	list_hotels_in_city_tool_function,
 	point_of_interests_tool_function,
 } from './tool_calls';
 
+// const flight_offer_search: ChatCompletionTool = {
+// 	type: 'function',
+// 	function: {
+// 		name: 'flight_offer_search',
+// 		description: 'Returns a list of available flight offers based on search criteria',
+// 		parameters: {
+// 			type: 'object',
+// 			properties: {
+// 				originLocationCode: {
+// 					type: 'string',
+// 					description: 'The IATA code for the origin location',
+// 				},
+// 				destinationLocationCode: {
+// 					type: 'string',
+// 					description: 'The IATA code for the destination location',
+// 				},
+// 				departureDate: {
+// 					type: 'string',
+// 					description: 'The departure date in YYYY-MM-DD format',
+// 				},
+// 				returnDate: {
+// 					type: 'string',
+// 					description: 'The return date in YYYY-MM-DD format, optional',
+// 					optional: true,
+// 				},
+// 				adults: {
+// 					type: 'number',
+// 					description: 'Number of adult passengers',
+// 				},
+// 				children: {
+// 					type: 'number',
+// 					description: 'Number of child passengers, optional',
+// 					optional: true,
+// 				},
+// 				infants: {
+// 					type: 'number',
+// 					description: 'Number of infant passengers, optional',
+// 					optional: true,
+// 				},
+// 				travelClass: {
+// 					type: 'string',
+// 					enum: ['ECONOMY', 'PREMIUS_ECONOMY', 'BUSINESS', 'FIRST'],
+// 					description: 'The class of travel, optional',
+// 					optional: true,
+// 				},
+// 				includedAirlineCodes: {
+// 					type: 'string',
+// 					description:
+// 						'Codes of airlines to include in the search, comma-separated, optional',
+// 					optional: true,
+// 				},
+// 				excludedAirlineCodes: {
+// 					type: 'string',
+// 					description:
+// 						'Codes of airlines to exclude from the search, comma-separated, optional',
+// 					optional: true,
+// 				},
+// 				nonStop: {
+// 					type: 'boolean',
+// 					description: 'Whether to filter for non-stop flights only, optional',
+// 					optional: true,
+// 				},
+// 				currencyCode: {
+// 					type: 'string',
+// 					description: 'Currency code for pricing, optional',
+// 					optional: true,
+// 				},
+// 				maxPrice: {
+// 					type: 'number',
+// 					description: 'Maximum price for tickets, optional',
+// 					optional: true,
+// 				},
+// 				max: {
+// 					type: 'number',
+// 					description: 'Maximum number of offers to return, optional',
+// 					optional: true,
+// 				},
+// 			},
+// 			required: ['originLocationCode', 'destinationLocationCode', 'departureDate', 'adults'],
+// 		},
+// 	},
+// };
+
 const flight_offer_search: ChatCompletionTool = {
 	type: 'function',
 	function: {
 		name: 'flight_offer_search',
-		description: 'Returns a list of available flight offers based on search criteria',
+		description:
+			'Find flights based on given criteria including departure and arrival locations, dates, and various preferences regarding airlines, stops, and class of service. Use type 1 for round trip and type 2 for one-way',
 		parameters: {
 			type: 'object',
 			properties: {
-				originLocationCode: {
+				departure_id: {
 					type: 'string',
-					description: 'The IATA code for the origin location',
+					description: 'Departure airport code or location kgmid, optional',
+					optional: true,
 				},
-				destinationLocationCode: {
+				arrival_id: {
 					type: 'string',
-					description: 'The IATA code for the destination location',
+					description: 'Arrival airport code or location kgmid, optional',
+					optional: true,
 				},
-				departureDate: {
+				currency: {
 					type: 'string',
-					description: 'The departure date in YYYY-MM-DD format',
+					description: 'Currency of the returned prices, default to USD',
+					optional: true,
 				},
-				returnDate: {
+				type: {
+					type: 'number',
+					enum: [1, 2, 3],
+					description:
+						'Type of the flights: 1 for Round trip, 2 for One way. If the user does not give a return date, use 2.',
+					optional: true,
+				},
+				outbound_date: {
 					type: 'string',
-					description: 'The return date in YYYY-MM-DD format, optional',
+					description: 'Outbound date in YYYY-MM-DD format, optional',
+					optional: true,
+				},
+				return_date: {
+					type: 'string',
+					description:
+						'Return date in YYYY-MM-DD format, required if type is set to 1 (Round trip)',
+					optional: true,
+				},
+				travel_class: {
+					type: 'number',
+					enum: [1, 2, 3, 4],
+					description:
+						'Travel class: 1 for Economy, 2 for Premium economy, 3 for Business, 4 for First, default to Economy',
 					optional: true,
 				},
 				adults: {
 					type: 'number',
-					description: 'Number of adult passengers',
+					description: 'Number of adults, default to 1',
+					optional: true,
 				},
 				children: {
 					type: 'number',
-					description: 'Number of child passengers, optional',
+					description: 'Number of children',
 					optional: true,
 				},
-				infants: {
+				bags: {
 					type: 'number',
-					description: 'Number of infant passengers, optional',
-					optional: true,
-				},
-				travelClass: {
-					type: 'string',
-					enum: ['ECONOMY', 'PREMIUS_ECONOMY', 'BUSINESS', 'FIRST'],
-					description: 'The class of travel, optional',
-					optional: true,
-				},
-				includedAirlineCodes: {
-					type: 'string',
-					description:
-						'Codes of airlines to include in the search, comma-separated, optional',
-					optional: true,
-				},
-				excludedAirlineCodes: {
-					type: 'string',
-					description:
-						'Codes of airlines to exclude from the search, comma-separated, optional',
-					optional: true,
-				},
-				nonStop: {
-					type: 'boolean',
-					description: 'Whether to filter for non-stop flights only, optional',
-					optional: true,
-				},
-				currencyCode: {
-					type: 'string',
-					description: 'Currency code for pricing, optional',
-					optional: true,
-				},
-				maxPrice: {
-					type: 'number',
-					description: 'Maximum price for tickets, optional',
-					optional: true,
-				},
-				max: {
-					type: 'number',
-					description: 'Maximum number of offers to return, optional',
+					description: 'Number of carry-on bags,',
 					optional: true,
 				},
 			},
-			required: ['originLocationCode', 'destinationLocationCode', 'departureDate', 'adults'],
+			required: [],
 		},
 	},
 };
@@ -793,7 +864,7 @@ export const tools: ChatCompletionTool[] = [
 	points_of_interest,
 ];
 export const availableFunctions = {
-	flight_offer_search: flight_search_tool_function,
+	flight_offer_search: google_flight_tool_function,
 	list_hotels_in_city: list_hotels_in_city_tool_function,
 	hotels_availability: hotels_availability_tool_function,
 	// activities_to_do: activities_to_do_tool_function,

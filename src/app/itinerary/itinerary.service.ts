@@ -247,84 +247,85 @@ export const itineraryServices = {
 
 		if (!itinerary) throw new Error('Itinerary not found');
 
-		const flightOffer = itinerary.pricing?.flightOffers?.[0];
-		if (!flightOffer) throw new Error('No flight offers found');
-		const allFieldCheckResult = await itineraryServices.checkIfAllTravelerInfoIsProvided(
-			itineraryId
-		);
-		if (allFieldCheckResult.length > 0) {
-			throw new Error(
-				'Some Travelers info is missing. Call /check-travelers-info to get the missing fields'
+		try {
+			const flightOffer = itinerary.pricing?.flightOffers?.[0];
+			if (!flightOffer) throw new Error('No flight offers found');
+			const allFieldCheckResult = await itineraryServices.checkIfAllTravelerInfoIsProvided(
+				itineraryId
 			);
-		}
+			if (allFieldCheckResult.length > 0) {
+				throw new Error(
+					'Some Travelers info is missing. Call /check-travelers-info to get the missing fields'
+				);
+			}
 
-		const travelers = itinerary.users.map((user) => user.travelerInfo);
+			const travelers = itinerary.users.map((user) => user.travelerInfo);
 
-		// count total travelers in pricing
-		const pricing = itinerary.pricing;
-		if (!pricing) throw new Error('No pricing data found');
-		const totalTravelers = pricing.flightOffers?.[0]?.travelerPricings?.length;
+			// count total travelers in pricing
+			const pricing = itinerary.pricing;
+			if (!pricing) throw new Error('No pricing data found');
+			const totalTravelers = pricing.flightOffers?.[0]?.travelerPricings?.length;
 
-		if (!totalTravelers) throw new Error('No travelers found in pricing');
-		// if (totalTravelers !== travelers.length)
-		// 	throw new Error(
-		// 		'Travelers count mismatch. There should be ' +
-		// 			totalTravelers +
-		// 			' travelers, but found ' +
-		// 			travelers.length
-		// 	);
+			if (!totalTravelers) throw new Error('No travelers found in pricing');
+			if (totalTravelers !== travelers.length)
+				throw new Error(
+					'Travelers count mismatch. There should be ' +
+						totalTravelers +
+						' travelers, but found ' +
+						travelers.length
+				);
 
-		// add id field for traveler info
-		travelers.forEach((traveler, index) => ({
-			...traveler,
-			id: index + 1,
-		}));
+			// add id field for traveler info
+			travelers.forEach((traveler, index) => ({
+				...traveler,
+				id: index + 1,
+			}));
 
-		const remarks = {
-			general: [
-				{
-					subType: 'GENERAL_MISCELLANEOUS',
-					text: 'ONLINE BOOKING FROM TRAVENTURE',
-				},
-			],
-		};
-
-		const ticketAgreement = {
-			option: 'DELAY_TO_CANCEL',
-			delay: '6D',
-		};
-
-		const contacts = [
-			{
-				addresseeName: {
-					firstName: 'ISHWAK',
-					lastName: 'SHARDA',
-				},
-				companyName: 'TRAVENTURE',
-				purpose: 'STANDARD',
-				phones: [
+			const remarks = {
+				general: [
 					{
-						deviceType: 'LANDLINE',
-						countryCallingCode: '34',
-						number: '480080071',
-					},
-					{
-						deviceType: 'MOBILE',
-						countryCallingCode: '33',
-						number: '480080072',
+						subType: 'GENERAL_MISCELLANEOUS',
+						text: 'ONLINE BOOKING FROM TRAVENTURE',
 					},
 				],
-				emailAddress: 'support@traventure.com',
-				address: {
-					lines: ['Calle Prado, 16'],
-					postalCode: '28014',
-					cityName: 'Madrid',
-					countryCode: 'ES',
+			};
+
+			const ticketAgreement = {
+				option: 'DELAY_TO_CANCEL',
+				delay: '6D',
+			};
+
+			const contacts = [
+				{
+					addresseeName: {
+						firstName: 'ISHWAK',
+						lastName: 'SHARDA',
+					},
+					companyName: 'TRAVENTURE',
+					purpose: 'STANDARD',
+					phones: [
+						{
+							deviceType: 'LANDLINE',
+							countryCallingCode: '34',
+							number: '480080071',
+						},
+						{
+							deviceType: 'MOBILE',
+							countryCallingCode: '33',
+							number: '480080072',
+						},
+					],
+					emailAddress: 'support@traventure.com',
+					address: {
+						lines: ['Calle Prado, 16'],
+						postalCode: '28014',
+						cityName: 'Madrid',
+						countryCode: 'ES',
+					},
 				},
-			},
-		];
-		let booking;
-		try {
+			];
+			let booking;
+
 			booking = await amadeus.booking.flightOrders.post({
 				data: {
 					type: 'flight-order',
@@ -338,8 +339,6 @@ export const itineraryServices = {
 		} catch (err) {
 			console.log(err);
 		}
-
-		console.log('Booking', booking);
 
 		const referenceId = nanoid(6).toLocaleUpperCase();
 		// save te booking

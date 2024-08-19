@@ -119,7 +119,7 @@ const flight_offer_search: ChatCompletionTool = {
 					type: 'number',
 					enum: [1, 2, 3],
 					description:
-						'Type of the flights: 1 for Round trip, 2 for One way. If the user does not give a return date, use 2.',
+						'Type of the flights. 1 for Round trip, 2 for One way. If the user does not give a return date, use 2.',
 					optional: true,
 				},
 				outbound_date: {

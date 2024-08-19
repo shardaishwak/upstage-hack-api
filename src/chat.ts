@@ -26,14 +26,18 @@ export const handleChat = async (q: string, io?: Server) => {
 	const messages: ChatCompletionMessageParam[] = [
 		{
 			role: 'system',
-			content: `For flights, show only 5 results. When showing activities, show at least 15. For activity, field "city" can be also something complex, not just the city.
+			content: `For flights, show only 5 results. When showing activities, show at least 15. For activity, field "city" can be also something complex, not just the city. For flights, use type=1 for round flights and type=2 for one-way. This is understood based on whether the user added a return flight or not.
                 `,
 		},
 	];
 
 	messages.push({
 		role: 'user',
-		content: (q as string) + '. Preferences: ' + preferences.join(', '),
+		content:
+			(q as string) +
+			'. Preferences: ' +
+			preferences.join(', ') +
+			'. If user added return flight, type=1, otherwise type=2.',
 	});
 	const response = await upstage.chat.completions.create({
 		model: 'solar-1-mini-chat',

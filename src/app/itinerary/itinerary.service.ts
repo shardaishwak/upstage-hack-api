@@ -247,25 +247,25 @@ export const itineraryServices = {
 
 		if (!itinerary) throw new Error('Itinerary not found');
 
-		const flightOffer = itinerary.pricing?.flightOffers?.[0];
-		if (!flightOffer) throw new Error('No flight offers found');
-		const allFieldCheckResult = await itineraryServices.checkIfAllTravelerInfoIsProvided(
-			itineraryId
-		);
-		if (allFieldCheckResult.length > 0) {
-			throw new Error(
-				'Some Travelers info is missing. Call /check-travelers-info to get the missing fields'
-			);
-		}
+		// const flightOffer = itinerary.pricing?.flightOffers?.[0];
+		// if (!flightOffer) throw new Error('No flight offers found');
+		// const allFieldCheckResult = await itineraryServices.checkIfAllTravelerInfoIsProvided(
+		// 	itineraryId
+		// );
+		// if (allFieldCheckResult.length > 0) {
+		// 	throw new Error(
+		// 		'Some Travelers info is missing. Call /check-travelers-info to get the missing fields'
+		// 	);
+		// }
 
 		const travelers = itinerary.users.map((user) => user.travelerInfo);
 
 		// count total travelers in pricing
-		const pricing = itinerary.pricing;
-		if (!pricing) throw new Error('No pricing data found');
-		const totalTravelers = pricing.flightOffers?.[0]?.travelerPricings?.length;
+		// const pricing = itinerary.pricing;
+		// if (!pricing) throw new Error('No pricing data found');
+		// const totalTravelers = pricing.flightOffers?.[0]?.travelerPricings?.length;
 
-		if (!totalTravelers) throw new Error('No travelers found in pricing');
+		// if (!totalTravelers) throw new Error('No travelers found in pricing');
 		// if (totalTravelers !== travelers.length)
 		// 	throw new Error(
 		// 		'Travelers count mismatch. There should be ' +

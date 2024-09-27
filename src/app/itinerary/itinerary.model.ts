@@ -43,6 +43,7 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			type: String,
 			required: true,
 		},
+
 		admin: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: Model.USER,
@@ -92,6 +93,31 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 		booking: {
 			type: Object,
 			default: {},
+		},
+		departure: {
+			type: String,
+			default: '',
+		},
+		arrival: {
+			type: String,
+			default: '',
+		},
+
+		fromDate: {
+			type: String,
+			default: '',
+		},
+		toDate: {
+			type: String,
+			default: '',
+		},
+		people: {
+			type: Number,
+			default: 1,
+		},
+		preferences: {
+			type: [String],
+			default: [],
 		},
 	},
 	{ timestamps: true }

@@ -35,6 +35,13 @@ export interface IItinerary {
 
 	createdAt: string;
 	updatedAt: string;
+
+	departure: string;
+	arrival: string;
+	fromDate: string;
+	toDate: string;
+	people: number;
+	preferences: string[];
 }
 
 export enum ItineraryType {

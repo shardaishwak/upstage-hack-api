@@ -370,4 +370,23 @@ export const itineraryServices = {
 			.populate('users.user');
 		return itinerary;
 	},
+
+	saveAdditionalInfo: async (
+		itineraryId: string,
+		additionalInfo?: {
+			departure?: string;
+			arrival?: string;
+			fromDate?: string;
+			toDate?: string;
+			people?: number;
+			preferences?: string[];
+		}
+	) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ ...additionalInfo },
+			{ new: true }
+		);
+		return itinerary;
+	},
 };

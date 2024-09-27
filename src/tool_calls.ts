@@ -80,7 +80,8 @@ export const google_flight_return_tool_function = async (params: {
 	departure_token: string;
 }) => {
 	try {
-		return await serpApi.getGoogleReturnFlight(params);
+		const outboundFlights = await serpApi.getGoogleReturnFlight(params);
+		return outboundFlights;
 	} catch (err: any) {
 		console.log(err?.response?.data);
 		return null;

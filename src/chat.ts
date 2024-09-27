@@ -7,11 +7,11 @@ import { google_tool_functions, google_tools } from './google_tools';
 const generateTitleFromQuery = async (q: string) => {
 	// Generate a nice title to show based on what the user searched for
 	const response = await upstage.chat.completions.create({
-		model: 'solar-1-mini-chat',
+		model: 'solar-pro',
 		messages: [
 			{
 				role: 'user',
-				content: `The user entered the particular query. Give a title to show on top of the items. Nothing fancy. "${q}".`,
+				content: `The user entered the particular query. Give a title to show on top of the items. "${q}".`,
 			},
 		],
 	});
@@ -84,6 +84,21 @@ export const handleChatV2 = async (q: string, io?: Server) => {
 	return data;
 };
 
+export const generateItinerary = async (q: string) => {
+	const response = await upstage.chat.completions.create({
+		model: 'solar-pro',
+		messages: [
+			{
+				role: 'user',
+				content: `"${q}". Include the ID`,
+			},
+		],
+	});
+
+	const responseMessage = response.choices[0].message;
+	return responseMessage.content;
+};
+
 export const handleChat = async (q: string, io?: Server) => {
 	const data: { [key: string]: any } = {};
 	const preferences: any[] = [];
@@ -146,19 +161,4 @@ export const handleChat = async (q: string, io?: Server) => {
 	const title = await generateTitleFromQuery(q);
 	data['title'] = title;
 	return data;
-};
-
-export const generateItinerary = async (q: string) => {
-	const response = await upstage.chat.completions.create({
-		model: 'solar-pro',
-		messages: [
-			{
-				role: 'user',
-				content: `"${q}". Include the ID`,
-			},
-		],
-	});
-
-	const responseMessage = response.choices[0].message;
-	return responseMessage.content;
 };

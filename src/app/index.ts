@@ -16,7 +16,7 @@ import messageRoutes from './routes/messages';
 import axios from 'axios';
 import fs from 'fs';
 import FormData from 'form-data';
-import { handleChat, handleChatV2 } from '../chat';
+import { extractPassport } from '../chat';
 import { itineraryRouter } from './itinerary/itinerary.router';
 
 dotenv.config();
@@ -177,6 +177,74 @@ app.post('/ocr', upload.single('document'), async (req: Request, res: Response) 
 		console.log('passportInfo', passportInfo);
 
 		res.json(passportInfo); // Send extracted passport info as response
+	} catch (error) {
+		console.error('OCR error:', error);
+		res.status(500).send({ error: 'OCR processing failed' });
+	}
+});
+
+app.post('/passport', upload.single('document'), async (req: Request, res: Response) => {
+	try {
+		if (!req.file) {
+			return res.status(400).send({ error: 'No file uploaded' });
+		}
+
+		const formData = new FormData();
+		formData.append('document', fs.createReadStream(req.file.path));
+
+		// Upload the File
+		let response = await axios.post(
+			'https://api.upstage.ai/v1/document-ai/async/document-parse',
+			formData,
+			{
+				headers: {
+					Authorization: `Bearer ${process.env.UPSTAGE_API_KEY}`,
+					'Content-Type': 'multipart/form-data',
+				},
+			}
+		);
+
+		// Clean up the uploaded file
+		fs.unlinkSync(req.file.path);
+
+		const data = response.data;
+		const request_id = data.request_id;
+
+		let c = true;
+
+		// Check the status of the file
+		while (c) {
+			response = await axios.get(
+				`https://api.upstage.ai/v1/document-ai/requests/${request_id}`,
+				{
+					headers: {
+						Authorization: `Bearer ${process.env.UPSTAGE_API_KEY}`,
+					},
+				}
+			);
+			console.log(response);
+
+			const status = response.data.status;
+
+			if (status === 'completed') {
+				c = false;
+			}
+
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+		}
+
+		const htmlInfo = response.data?.batches[0]?.download_url;
+
+		// fetch the URL as json
+		response = await axios.get(htmlInfo);
+
+		const htmlText = response.data?.html;
+
+		// now take the HTML and use LLM to extract the passport information
+
+		const extractPassportInfo = await extractPassport(htmlText);
+
+		res.json(extractPassportInfo); // Send extracted passport info as response
 	} catch (error) {
 		console.error('OCR error:', error);
 		res.status(500).send({ error: 'OCR processing failed' });

@@ -145,3 +145,52 @@ export const extractAdditionalInformation = async (q: string) => {
 		return null;
 	}
 };
+
+export const extractPassport = async (html: string) => {
+	console.log(html);
+	const query = `
+		You are given HTML content that represents the data scraped from a passport. Your job is to parse the data and return the following information in JSON format:
+		{
+			"passport_number": "string",
+			"nationality": "string",
+			"date_of_birth": "string",
+			"expiration_date": "string",
+			"full_name": "string",
+			"first_name": "string",
+			"last_name": "string",
+			"place_of_birth": "string",
+			"sex": "string",
+			"issuing_country": "string"
+			"issuing_date": "string",
+			"issuance_location": "string",
+		}
+
+		The HTML data is:
+		${html}
+	`;
+
+	const response = await upstage.chat.completions.create({
+		model: 'solar-1-mini-chat',
+		messages: [
+			{
+				role: 'system',
+				content: query,
+			},
+		],
+	});
+
+	console.log(response.choices[0].message.content);
+
+	const responseMessage = response.choices[0].message;
+	if (!responseMessage?.content) {
+		throw new Error('Failed to extract information');
+	}
+
+	try {
+		const data = JSON.parse(responseMessage.content);
+		return data;
+	} catch (err) {
+		console.log(err);
+		return null;
+	}
+};

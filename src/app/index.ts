@@ -12,6 +12,7 @@ import multer from 'multer';
 
 import authRoutes from './routes/auth';
 import messageRoutes from './routes/messages';
+import stripeRoutes from './routes/stripe';
 
 import axios from 'axios';
 import fs from 'fs';
@@ -40,6 +41,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/messages', messageRoutes);
 app.use('/itinerary', itineraryRouter);
+app.use('/stripe', stripeRoutes )
 
 app.get('/chat', async (req: Request, res: Response) => {
 	const q = req.query.q;

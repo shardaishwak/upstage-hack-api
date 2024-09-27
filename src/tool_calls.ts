@@ -113,3 +113,12 @@ export const google_restaurants_tool_function = async (params: any) => {
 		return null;
 	}
 };
+
+export const google_places_tool_function = async (params: any) => {
+	try {
+		return await serpApi.getGooglePlaces(params);
+	} catch (err: any) {
+		console.log(err?.response?.data);
+		return null;
+	}
+};

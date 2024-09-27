@@ -59,7 +59,6 @@ interface GoogleEventsResult {
 // Events in Vancouver
 export default async function getGoogleEvents(params: {
 	q: string;
-	location: string;
 }): Promise<GoogleEventsResult | null> {
 	try {
 		const response = await axios.get('https://serpapi.com/search.json?engine=google_events', {

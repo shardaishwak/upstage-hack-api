@@ -11,7 +11,7 @@ const generateTitleFromQuery = async (q: string) => {
 		messages: [
 			{
 				role: 'user',
-				content: `Generate a title for the query that the user searched for. Nothing fancy. "${q}".`,
+				content: `The user entered the particular query. Give a title to show on top of the items. Nothing fancy. "${q}".`,
 			},
 		],
 	});
@@ -64,11 +64,11 @@ export const handleChatV2 = async (q: string, io?: Server) => {
 			const functionArgs = JSON.parse(toolCall.function.arguments);
 			console.log('[functionArgs]', functionArgs);
 
-			let functionResponse = await functionToCall(functionArgs);
+			// let functionResponse = await functionToCall(functionArgs);
 
-			io?.emit('chat:loading:tool_call', { functionName, loading: false });
+			// io?.emit('chat:loading:tool_call', { functionName, loading: false });
 
-			data[functionName] = functionResponse;
+			// data[functionName] = functionResponse;
 
 			// messages.push({
 			// 	tool_call_id: toolCall.id,

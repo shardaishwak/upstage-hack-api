@@ -16,7 +16,7 @@ import messageRoutes from './routes/messages';
 import axios from 'axios';
 import fs from 'fs';
 import FormData from 'form-data';
-import { handleChat } from '../chat';
+import { generateItinerary, handleChat } from '../chat';
 import { itineraryRouter } from './itinerary/itinerary.router';
 
 dotenv.config();
@@ -40,6 +40,50 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/messages', messageRoutes);
 app.use('/itinerary', itineraryRouter);
+
+(async () => {
+	console.log(
+		await generateItinerary(`
+		{
+  "data": {
+    "flights": [
+      "ID:flight1-2024-10-01T08:00-Delta",
+      "ID:flight2-2024-10-02T17:00-American Airlines"
+    ],
+	"hotel": [
+      ID:"hotel1-2024-10-01T12:00-Lunch at The Grand Diner",
+      "ID:hotel2-2024-10-02T20:00-Dinner at La Bella",
+    ],
+    "restaurants": [
+      "ID:rest1-2024-10-01T12:00-Lunch at The Grand Diner",
+      "ID:rest2-2024-10-02T20:00-Dinner at La Bella"
+    ],
+    "attractions": [
+      "ID:attr1-2024-10-01T10:00-Museum Tour",
+      "ID:attr2-2024-10-02T15:00-Beach Walk",
+      "ID:attr3-2024-10-02T11:00-City Park Stroll"
+    ]
+  },
+  "instruction": {
+    "goal": "Create a detailed chronological itinerary in JSON format using the provided flight, restaurant, and attraction data. the first element before '-' is the ID of the element. Include it",
+    "assumptions": {
+      "flights": "Flights take approximately 2 hours unless otherwise specified.",
+      "restaurants": "Each meal takes 1.5 hours.",
+      "attractions": "Each attraction takes 1.5-2 hours depending on the activity.",
+      "transfers": {
+        "airport-to-attraction": "45 minutes",
+        "airport-to-restaurant": "30 minutes",
+        "restaurant-to-attraction": "15 minutes",
+        "between-attractions": "20 minutes"
+      }
+    },
+    "output_format": "Generate the output in JSON format and include the following fields for each event: 'id', 'date', 'start_time', 'end_time', 'event_description', and 'transfer_time'. The events should be listed in chronological order for each day, ensuring transfer times between each event."
+  }
+}
+	
+	`)
+	);
+})();
 
 app.get('/chat', async (req: Request, res: Response) => {
 	const q = req.query.q;
@@ -113,7 +157,7 @@ const extractPassportInfo = (ocrData: any) => {
 
 	lines.forEach((line, index) => {
 		if (line.match(/document type/i)) {
-			extractedInfo.documentType = line.split(':').pop()?.trim() || "PASSPORT";
+			extractedInfo.documentType = line.split(':').pop()?.trim() || 'PASSPORT';
 		} else if (line.match(/passport no|number/i)) {
 			extractedInfo.number = line.split(' ').pop() || '';
 		} else if (line.match(/surname|nom/i)) {
@@ -141,7 +185,6 @@ const extractPassportInfo = (ocrData: any) => {
 
 	return extractedInfo;
 };
-
 
 const upload = multer({ dest: 'uploads/' });
 

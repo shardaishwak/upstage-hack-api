@@ -42,7 +42,7 @@ app.use('/messages', messageRoutes);
 app.use('/itinerary', itineraryRouter);
 
 (async () => {
-	await handleChatV2('give me a list of events that i can attend in vancouver for children');
+	// await handleChatV2('give me a list of events that i can attend in vancouver for children');
 })();
 
 app.get('/chat', async (req: Request, res: Response) => {

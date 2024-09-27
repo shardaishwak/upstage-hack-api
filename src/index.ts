@@ -6,7 +6,7 @@ import { logger } from './config/winston';
 import amadeus from './config/amadeus';
 import { Server } from 'socket.io';
 import http from 'http';
-import { handleChat } from './chat';
+import { handleChat, handleChatV2 } from './chat';
 
 dotenv.config();
 
@@ -47,7 +47,7 @@ const cache: Map<string, any> = new Map();
 				}
 
 				// call the chat API system
-				const chatResponse = await handleChat(message, io);
+				const chatResponse = await handleChatV2(message, io);
 				cache.set(message, chatResponse);
 				io.emit('chat', chatResponse);
 

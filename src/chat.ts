@@ -15,7 +15,6 @@ const generateTitleFromQuery = async (q: string) => {
 			},
 		],
 	});
-	console.log(JSON.stringify(response, null, 2));
 	const responseMessage = response.choices[0].message;
 	return responseMessage.content;
 };
@@ -64,11 +63,11 @@ export const handleChatV2 = async (q: string, io?: Server) => {
 			const functionArgs = JSON.parse(toolCall.function.arguments);
 			console.log('[functionArgs]', functionArgs);
 
-			// let functionResponse = await functionToCall(functionArgs);
+			let functionResponse = await functionToCall(functionArgs);
 
-			// io?.emit('chat:loading:tool_call', { functionName, loading: false });
+			io?.emit('chat:loading:tool_call', { functionName, loading: false });
 
-			// data[functionName] = functionResponse;
+			data[functionName] = functionResponse;
 
 			// messages.push({
 			// 	tool_call_id: toolCall.id,

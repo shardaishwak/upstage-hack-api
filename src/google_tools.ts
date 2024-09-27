@@ -3,6 +3,7 @@ import {
 	google_events_tool_function,
 	google_flight_tool_function,
 	google_hotels_tool_function,
+	google_places_tool_function,
 	google_restaurants_tool_function,
 } from './tool_calls';
 
@@ -87,7 +88,8 @@ const hotel_search: ChatCompletionTool = {
 			properties: {
 				q: {
 					type: 'string',
-					description: 'Search query or hotel location',
+					description:
+						'Search query or hotel location. (e.g., "hotels in New York" or "resorts in Bali". Always include the location name). Make it also descriptitve',
 				},
 				gl: {
 					type: 'string',
@@ -168,7 +170,8 @@ const restaurant_search: ChatCompletionTool = {
 			properties: {
 				q: {
 					type: 'string',
-					description: 'Search query (e.g., restaurant name, cuisine type, etc.)',
+					description:
+						'Search query (e.g., restaurant name, cuisine type, etc.) including the place name',
 				},
 				location: {
 					type: 'string',
@@ -190,22 +193,45 @@ const event_search: ChatCompletionTool = {
 			properties: {
 				q: {
 					type: 'string',
-					description: 'Search query for events (e.g., event name, type of event, etc.)',
-				},
-				location: {
-					type: 'string',
-					description: 'Location for the event search (city or specific area)',
+					description:
+						'Search query for events (e.g., event name, type of event, etc.) including the place name',
 				},
 			},
-			required: ['q', 'location'],
+			required: ['q'],
 		},
 	},
 };
 
-export const google_tools = [flight_offer_search, hotel_search, restaurant_search, event_search];
+const places_search: ChatCompletionTool = {
+	type: 'function',
+	function: {
+		name: 'places_search',
+		description: 'Find nearby places or activities to do based on a search query.',
+		parameters: {
+			type: 'object',
+			properties: {
+				q: {
+					type: 'string',
+					description:
+						'Search query for places or activities (e.g., park, museum, cafe, etc.) including the place name. Give a more detailed descrption so that the serach can understand.',
+				},
+			},
+			required: ['q'],
+		},
+	},
+};
+
+export const google_tools = [
+	flight_offer_search,
+	hotel_search,
+	restaurant_search,
+	event_search,
+	places_search,
+];
 export const google_tool_functions = {
 	flight_offer_search: google_flight_tool_function,
 	hotel_search: google_hotels_tool_function,
 	restaurant_search: google_restaurants_tool_function,
 	event_search: google_events_tool_function,
+	places_search: google_places_tool_function,
 };

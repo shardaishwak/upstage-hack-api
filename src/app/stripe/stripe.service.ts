@@ -56,33 +56,10 @@ export const stripeServices = {
 			const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent);
 
 			const itineraryId = session.metadata?.itineraryId;
-			const customerEmail = session.customer_details?.email;
-			const paymentStatus = paymentIntent.status;
-			const totalAmount = paymentIntent.amount_received; // Amount received (in cents)
-			const currency = paymentIntent.currency;
-
-			// Extract card details from payment method
-			const paymentMethod = paymentIntent.charges?.data[0]?.payment_method_details?.card;
-			const cardBrand = paymentMethod?.brand; // e.g., "visa", "mastercard"
-			const last4 = paymentMethod?.last4; // Last 4 digits of the card
-			const expMonth = paymentMethod?.exp_month;
-			const expYear = paymentMethod?.exp_year;
-
+			
 			try {
 				await ItineraryModel.findByIdAndUpdate(itineraryId, {
-					payment: {
-						paymentIntentId: paymentIntent.id,
-						paymentStatus: paymentStatus,
-						amountPaid: totalAmount / 100, // Convert cents to dollars
-						currency: currency,
-						customerEmail: customerEmail,
-						cardDetails: {
-							brand: cardBrand,
-							last4: last4,
-							expMonth: expMonth,
-							expYear: expYear,
-						},
-					},
+					payment: paymentIntent,
 					isBooked: true,
 				});
 

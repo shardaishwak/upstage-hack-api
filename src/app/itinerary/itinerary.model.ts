@@ -86,6 +86,10 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			type: Object,
 			default: {},
 		},
+		payment: {
+			type: Object,
+			default: {},
+		},
 		isBooked: {
 			type: Boolean,
 			default: false,

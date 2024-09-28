@@ -12,12 +12,14 @@ import multer from 'multer';
 
 import authRoutes from './routes/auth';
 import messageRoutes from './routes/messages';
+import stripeRoutes from './routes/stripe';
 
 import axios from 'axios';
 import fs from 'fs';
 import FormData from 'form-data';
 import { extractPassport } from '../chat';
 import { itineraryRouter } from './itinerary/itinerary.router';
+import { stripeServices } from './stripe/stripe.service';
 import { serpApi } from '../config/serpApi';
 
 dotenv.config();
@@ -34,13 +36,14 @@ app.use(
 );
 
 // TODO: Connect stripe webhook
-app.post('/webhook', express.raw({ type: 'application/json' }));
+app.post('/webhook', express.raw({ type: 'application/json' }),stripeServices.handleWebhook);
 
 app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/messages', messageRoutes);
 app.use('/itinerary', itineraryRouter);
+app.use('/stripe', stripeRoutes )
 
 (async () => {
 	// await handleChatV2('give me a list of events that i can attend in vancouver for children');

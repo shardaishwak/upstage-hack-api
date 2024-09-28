@@ -28,6 +28,7 @@ export interface IItinerary {
 	booking: any;
 
 	pricing: any;
+	payment: any;
 
 	flight?: AmadeusFlightOffer;
 	hotels: AmadeusHotelOffer[];

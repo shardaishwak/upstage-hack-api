@@ -19,6 +19,7 @@ import fs from 'fs';
 import FormData from 'form-data';
 import { handleChat } from '../chat';
 import { itineraryRouter } from './itinerary/itinerary.router';
+import { stripeServices } from './stripe/stripe.service';
 
 dotenv.config();
 
@@ -34,7 +35,7 @@ app.use(
 );
 
 // TODO: Connect stripe webhook
-app.post('/webhook', express.raw({ type: 'application/json' }));
+app.post('/webhook', express.raw({ type: 'application/json' }),stripeServices.handleWebhook);
 
 app.use(express.json());
 

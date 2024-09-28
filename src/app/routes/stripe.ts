@@ -14,5 +14,4 @@ router.post('/create-checkout-session', async (req, res, next) => {
 	}
 });
 
-
 export default router;

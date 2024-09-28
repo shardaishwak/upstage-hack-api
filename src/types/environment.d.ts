@@ -10,5 +10,6 @@ declare namespace NodeJS {
 		UPSTAGE_API_KEY: string;
 		GEOLOCATION_API_KEY: string;
 		MAPBOX_PUBLIC_KEY: string;
+		STRIPE_WEBHOOK_SECRET: string;
 	}
 }

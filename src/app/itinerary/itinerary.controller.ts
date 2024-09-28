@@ -176,4 +176,200 @@ export const itineraryController = {
 			next(error);
 		}
 	},
+
+	// ggoogle
+	saveGoogleOutoundFlight: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const flight = req.body.flight;
+			const date = req.body.date;
+			const response = await itineraryServices.saveGoogleOutboundFlight(
+				req.params.id,
+				flight,
+				date
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	saveGoogleReturnFlight: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const flight = req.body.flight;
+			const date = req.body.date;
+			const response = await itineraryServices.saveGoogleReturnFlight(
+				req.params.id,
+				flight,
+				date
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	saveGoogleHotel: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const hotel = req.body.hotel;
+			const response = await itineraryServices.saveGoogleHotel(req.params.id, hotel);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	saveGoogleTopSights: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const topSights = req.body.topSights;
+			const response = await itineraryServices.saveGoogleTopSights(req.params.id, topSights);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	saveGoogleLocalResults: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const localResults = req.body.localResults;
+			const response = await itineraryServices.saveGoogleLocalResults(
+				req.params.id,
+				localResults
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	saveGoogleRestaurants: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const restaurants = req.body.restaurants;
+			const response = await itineraryServices.saveGoogleRestaurants(
+				req.params.id,
+				restaurants
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	saveGoogleShopping: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const shopping = req.body.shopping;
+			const response = await itineraryServices.saveGoogleShopping(req.params.id, shopping);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	saveGoogleEvents: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const events = req.body.events;
+			const response = await itineraryServices.saveGoogleEvents(req.params.id, events);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	deleteGoogleOutboundFlight: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.deleteGoogleOutboundFlight(req.params.id);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	deleteGoogleReturnFlight: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.deleteGoogleReturnFlight(req.params.id);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	deleteGoogleHotel: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.deleteGoogleHotel(
+				req.params.id,
+				req.params.property_token
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	deleteGoogleTopSights: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.deleteGoogleTopSights(
+				req.params.id,
+				req.params.title
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	deleteGoogleLocalResults: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.deleteGoogleLocalResults(
+				req.params.id,
+				req.params.placeId
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	deleteGoogleRestaurants: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.deleteGoogleRestaurants(
+				req.params.id,
+				req.params.title
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	deleteGoogleShopping: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.deleteGoogleShopping(
+				req.params.id,
+				req.params.title
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	deleteGoogleEvents: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.deleteGoogleEvents(
+				req.params.id,
+				req.params.title
+			);
+			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	magicItinerary: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.generateItineraryMagic(req.params.id);
+			res.send({ message: 'Itinerary generated', data: response });
+		} catch (error) {
+			next(error);
+		}
+	},
 };

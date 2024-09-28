@@ -1,3 +1,8 @@
+import { GoogleEventsResult } from '../../config/serp/getGoogleEvents';
+import { GoogleFlightData } from '../../config/serp/getGoogleFlights';
+import { GoogleFoodResult } from '../../config/serp/getGoogleFood';
+import { GoogleHotelProperty } from '../../config/serp/getGoogleHotels';
+import { GooglePlacesResult } from '../../config/serp/getGooglePlaces';
 import { FlightOffer$1 } from '../../types/amadeus';
 import { PointsOfInterest } from '../../types/mapbox';
 import { IUser } from '../user/user.interface';
@@ -34,8 +39,23 @@ export interface IItinerary {
 	hotels: AmadeusHotelOffer[];
 	activities: AmadeusActivityOffer[];
 
+	g_flights: GoogleFlightData['best_flights'];
+	g_hotels: GoogleHotelProperty[];
+	g_top_sights: GooglePlacesResult['top_sights']['sights'];
+	g_local_results: GooglePlacesResult['local_results']['places'];
+	g_restaurants: GoogleFoodResult[];
+	g_places_shopping: GooglePlacesResult['shopping_results'];
+	g_events: GoogleEventsResult['events_results'];
+
 	createdAt: string;
 	updatedAt: string;
+
+	departure: string;
+	arrival: string;
+	fromDate: string;
+	toDate: string;
+	people: number;
+	preferences: string[];
 }
 
 export enum ItineraryType {

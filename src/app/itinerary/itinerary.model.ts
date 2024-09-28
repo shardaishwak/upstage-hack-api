@@ -43,6 +43,7 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			type: String,
 			required: true,
 		},
+
 		admin: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: Model.USER,
@@ -96,6 +97,101 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 		booking: {
 			type: Object,
 			default: {},
+		},
+		departure: {
+			type: String,
+			default: '',
+		},
+		arrival: {
+			type: String,
+			default: '',
+		},
+
+		fromDate: {
+			type: String,
+			default: '',
+		},
+		toDate: {
+			type: String,
+			default: '',
+		},
+		people: {
+			type: Number,
+			default: 1,
+		},
+		preferences: {
+			type: [String],
+			default: [],
+		},
+		g_events: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_flights: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_hotels: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_top_sights: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_local_results: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_restaurants: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_places_shopping: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
 		},
 	},
 	{ timestamps: true }

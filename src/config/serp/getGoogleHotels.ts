@@ -19,7 +19,7 @@ export type GoogleHotelsParams = {
 	bathrooms?: number;
 };
 
-interface GoogleHotelProperty {
+export interface GoogleHotelProperty {
 	type: string; // Type of property (e.g. hotel or vacation rental)
 	name: string; // Name of the property
 	description: string; // Description of the property

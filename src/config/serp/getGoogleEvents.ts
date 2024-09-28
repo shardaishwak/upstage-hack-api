@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const cache = new Map<string, GoogleEventsResult['events_results'][number]>();
 
-interface GoogleEventsResult {
+export interface GoogleEventsResult {
 	search_metadata: {
 		id: string;
 		status: string;

@@ -35,4 +35,38 @@ router.delete('/:id/activity/:activityId', itineraryController.deleteActivity);
 
 router.put('/:id/user/:userId', itineraryController.updateTravelerInfo); // add travel info
 
+//google
+
+router.post('/:id/google/outbound-flight', itineraryController.saveGoogleOutoundFlight);
+
+router.post('/:id/google/return-flight', itineraryController.saveGoogleReturnFlight);
+
+router.post('/:id/google/hotel', itineraryController.saveGoogleHotel);
+
+router.post('/:id/google/top-sights', itineraryController.saveGoogleTopSights);
+
+router.post('/:id/google/local-results', itineraryController.saveGoogleLocalResults);
+
+router.post('/:id/google/restaurants', itineraryController.saveGoogleRestaurants);
+
+router.post('/:id/google/shopping', itineraryController.saveGoogleShopping);
+
+router.post('/:id/google/events', itineraryController.saveGoogleEvents);
+
+router.delete('/:id/google/outbound-flight/', itineraryController.deleteGoogleOutboundFlight);
+
+router.delete('/:id/google/return-flight/', itineraryController.deleteGoogleReturnFlight);
+
+router.delete('/:id/google/hotel/:hotelId', itineraryController.deleteGoogleHotel);
+
+router.delete('/:id/google/top-sights/:sightId', itineraryController.deleteGoogleTopSights);
+
+router.delete('/:id/google/local-results/:placeId', itineraryController.deleteGoogleLocalResults);
+
+router.delete('/:id/google/restaurants/:restaurantId', itineraryController.deleteGoogleRestaurants);
+
+router.delete('/:id/google/shopping/:placeId', itineraryController.deleteGoogleShopping);
+
+router.delete('/:id/google/events/:eventId', itineraryController.deleteGoogleEvents);
+
 export const itineraryRouter = router;

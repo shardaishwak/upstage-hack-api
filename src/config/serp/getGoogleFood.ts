@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const googleFoodCache = new Map<string, GoogleFoodResult>();
 
-interface GoogleFoodResult {
+export interface GoogleFoodResult {
 	title: string;
 	rating: number;
 	reviews_original: string;

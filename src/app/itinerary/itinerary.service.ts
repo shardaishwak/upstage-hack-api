@@ -1,4 +1,9 @@
 import amadeus from '../../config/amadeus';
+import { GoogleEventsResult } from '../../config/serp/getGoogleEvents';
+import { GoogleFlightData } from '../../config/serp/getGoogleFlights';
+import { GoogleFoodResult } from '../../config/serp/getGoogleFood';
+import { GoogleHotelProperty } from '../../config/serp/getGoogleHotels';
+import { GooglePlacesResult } from '../../config/serp/getGooglePlaces';
 import { AmadeusFlightOffer, TravelerInfo } from './itinerary.interface';
 import { ItineraryModel } from './itinerary.model';
 
@@ -387,6 +392,194 @@ export const itineraryServices = {
 			{ ...additionalInfo },
 			{ new: true }
 		);
+		return itinerary;
+	},
+
+	saveGoogleOutboundFlight: async (
+		itineraryId: string,
+		data: GoogleFlightData['best_flights'][number]
+	) => {
+		const itinerary = await ItineraryModel.findById(itineraryId);
+		if (!itinerary) throw new Error('Itinerary not found');
+
+		const g_flight = itinerary.g_flights;
+		if (g_flight.length == 0) {
+			itinerary.g_flights = [data];
+		} else if (g_flight.length == 1) {
+			itinerary.g_flights.push(data);
+		} else {
+			itinerary.g_flights[0] = data;
+		}
+	},
+
+	saveGoogleReturnFlight: async (
+		itineraryId: string,
+		data: GoogleFlightData['best_flights'][number]
+	) => {
+		const itinerary = await ItineraryModel.findById(itineraryId);
+		if (!itinerary) throw new Error('Itinerary not found');
+
+		const g_flight = itinerary.g_flights;
+		if (g_flight.length == 1) {
+			itinerary.g_flights.push(data);
+		} else if (g_flight.length == 2) {
+			itinerary.g_flights[1] = data;
+		} else {
+			throw new Error('Invalid operation. Outbound flight is not saved');
+		}
+	},
+
+	saveGoogleHotel: async (itineraryId: string, data: GoogleHotelProperty) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $push: { g_hotels: data } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	saveGoogleTopSights: async (
+		itineraryId: string,
+		data: GooglePlacesResult['top_sights']['sights']
+	) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $push: { g_top_sights: data } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	saveGoogleLocalResults: async (
+		itineraryId: string,
+		data: GooglePlacesResult['local_results']['places']
+	) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $push: { g_local_results: data } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	saveGoogleRestaurants: async (itineraryId: string, data: GoogleFoodResult) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $push: { g_restaurants: data } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	saveGoogleShopping: async (
+		itineraryId: string,
+		data: GooglePlacesResult['shopping_results']
+	) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $push: { g_places_shopping: data } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	saveGoogleEvents: async (itineraryId: string, data: GoogleEventsResult['events_results']) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $push: { g_events: data } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	deleteGoogleOutboundFlight: async (itineraryId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ g_flights: [] },
+			{ new: true }
+		);
+		return itinerary;
+	},
+
+	deleteGoogleReturnFlight: async (itineraryId: string) => {
+		const itinerary = await ItineraryModel.findById(itineraryId);
+
+		if (!itinerary) throw new Error('Itinerary not found');
+
+		const g_flight = itinerary.g_flights;
+
+		if (g_flight.length == 2) {
+			itinerary.g_flights.pop();
+		} else if (g_flight.length == 1) {
+			itinerary.g_flights = [];
+		} else {
+			throw new Error('Invalid operation. Outbound flight is not saved');
+		}
+	},
+
+	deleteGoogleHotel: async (itineraryId: string, hotelId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $pull: { g_hotels: { _id: hotelId } } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	deleteGoogleTopSights: async (itineraryId: string, sightId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $pull: { g_top_sights: { _id: sightId } } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	deleteGoogleLocalResults: async (itineraryId: string, placeId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $pull: { g_local_results: { _id: placeId } } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	deleteGoogleRestaurants: async (itineraryId: string, restaurantId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $pull: { g_restaurants: { _id: restaurantId } } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	deleteGoogleShopping: async (itineraryId: string, placeId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $pull: { g_places_shopping: { _id: placeId } } },
+			{ new: true }
+		);
+
+		return itinerary;
+	},
+
+	deleteGoogleEvents: async (itineraryId: string, eventId: string) => {
+		const itinerary = await ItineraryModel.findByIdAndUpdate(
+			itineraryId,
+			{ $pull: { g_events: { _id: eventId } } },
+			{ new: true }
+		);
+
 		return itinerary;
 	},
 };

@@ -36,7 +36,7 @@ export interface GooglePlacesResult {
 		time_taken_displayed: number;
 		organic_results_state: string;
 	};
-	top_sights?: {
+	top_sights: {
 		sights: {
 			title: string;
 			description: string;
@@ -47,8 +47,8 @@ export interface GooglePlacesResult {
 			thumbnail: string;
 		}[];
 	};
-	local_results?: {
-		places?: {
+	local_results: {
+		places: {
 			position: number;
 			rating: number;
 			reviews_original: string;
@@ -70,6 +70,19 @@ export interface GooglePlacesResult {
 		}[];
 		more_locations_link: string;
 	};
+	shopping_results: {
+		price: string;
+		extracted_price: number;
+		block: string;
+		link: string;
+		position: number;
+		rating: number;
+		reviews: number;
+		source: string;
+		thumbnail: string;
+		title: string;
+		extensions: string[];
+	}[];
 	knowledge_graph?: {
 		title: string;
 		type: string;

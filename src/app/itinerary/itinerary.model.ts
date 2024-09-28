@@ -119,6 +119,76 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			type: [String],
 			default: [],
 		},
+		g_events: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_flights: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_hotels: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_top_sights: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_local_results: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_restaurants: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
+		g_places_shopping: {
+			type: [
+				{
+					type: Object,
+					default: {},
+					_id: true,
+				},
+			],
+			default: [],
+		},
 	},
 	{ timestamps: true }
 );

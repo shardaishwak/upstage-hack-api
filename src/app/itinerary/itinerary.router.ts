@@ -57,16 +57,16 @@ router.delete('/:id/google/outbound-flight/', itineraryController.deleteGoogleOu
 
 router.delete('/:id/google/return-flight/', itineraryController.deleteGoogleReturnFlight);
 
-router.delete('/:id/google/hotel/:hotelId', itineraryController.deleteGoogleHotel);
+router.delete('/:id/google/hotel/:property_token', itineraryController.deleteGoogleHotel);
 
-router.delete('/:id/google/top-sights/:sightId', itineraryController.deleteGoogleTopSights);
+router.delete('/:id/google/top-sights/:title', itineraryController.deleteGoogleTopSights);
 
 router.delete('/:id/google/local-results/:placeId', itineraryController.deleteGoogleLocalResults);
 
-router.delete('/:id/google/restaurants/:restaurantId', itineraryController.deleteGoogleRestaurants);
+router.delete('/:id/google/restaurants/:title', itineraryController.deleteGoogleRestaurants);
 
-router.delete('/:id/google/shopping/:placeId', itineraryController.deleteGoogleShopping);
+router.delete('/:id/google/shopping/:title', itineraryController.deleteGoogleShopping);
 
-router.delete('/:id/google/events/:eventId', itineraryController.deleteGoogleEvents);
+router.delete('/:id/google/events/:title', itineraryController.deleteGoogleEvents);
 
 export const itineraryRouter = router;

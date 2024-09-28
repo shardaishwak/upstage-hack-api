@@ -289,7 +289,7 @@ export const itineraryController = {
 		try {
 			const response = await itineraryServices.deleteGoogleHotel(
 				req.params.id,
-				req.params.hotelId
+				req.params.property_token
 			);
 			res.send(response);
 		} catch (error) {
@@ -301,7 +301,7 @@ export const itineraryController = {
 		try {
 			const response = await itineraryServices.deleteGoogleTopSights(
 				req.params.id,
-				req.params.sightId
+				req.params.title
 			);
 			res.send(response);
 		} catch (error) {
@@ -325,7 +325,7 @@ export const itineraryController = {
 		try {
 			const response = await itineraryServices.deleteGoogleRestaurants(
 				req.params.id,
-				req.params.restaurantId
+				req.params.title
 			);
 			res.send(response);
 		} catch (error) {
@@ -337,7 +337,7 @@ export const itineraryController = {
 		try {
 			const response = await itineraryServices.deleteGoogleShopping(
 				req.params.id,
-				req.params.placeId
+				req.params.title
 			);
 			res.send(response);
 		} catch (error) {
@@ -349,7 +349,7 @@ export const itineraryController = {
 		try {
 			const response = await itineraryServices.deleteGoogleEvents(
 				req.params.id,
-				req.params.eventId
+				req.params.title
 			);
 			res.send(response);
 		} catch (error) {

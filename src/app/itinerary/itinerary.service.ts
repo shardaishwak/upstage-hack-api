@@ -524,20 +524,20 @@ export const itineraryServices = {
 		}
 	},
 
-	deleteGoogleHotel: async (itineraryId: string, hotelId: string) => {
+	deleteGoogleHotel: async (itineraryId: string, property_token: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_hotels: { _id: hotelId } } },
+			{ $pull: { g_hotels: { property_token } } },
 			{ new: true }
 		);
 
 		return itinerary;
 	},
 
-	deleteGoogleTopSights: async (itineraryId: string, sightId: string) => {
+	deleteGoogleTopSights: async (itineraryId: string, title: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_top_sights: { _id: sightId } } },
+			{ $pull: { g_top_sights: { title } } },
 			{ new: true }
 		);
 
@@ -547,37 +547,37 @@ export const itineraryServices = {
 	deleteGoogleLocalResults: async (itineraryId: string, placeId: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_local_results: { _id: placeId } } },
+			{ $pull: { g_local_results: { place_id: placeId } } },
 			{ new: true }
 		);
 
 		return itinerary;
 	},
 
-	deleteGoogleRestaurants: async (itineraryId: string, restaurantId: string) => {
+	deleteGoogleRestaurants: async (itineraryId: string, title: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_restaurants: { _id: restaurantId } } },
+			{ $pull: { g_restaurants: { title: title } } },
 			{ new: true }
 		);
 
 		return itinerary;
 	},
 
-	deleteGoogleShopping: async (itineraryId: string, placeId: string) => {
+	deleteGoogleShopping: async (itineraryId: string, title: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_places_shopping: { _id: placeId } } },
+			{ $pull: { g_places_shopping: { title: title } } },
 			{ new: true }
 		);
 
 		return itinerary;
 	},
 
-	deleteGoogleEvents: async (itineraryId: string, eventId: string) => {
+	deleteGoogleEvents: async (itineraryId: string, title: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_events: { _id: eventId } } },
+			{ $pull: { g_events: { title: title } } },
 			{ new: true }
 		);
 

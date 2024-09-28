@@ -115,7 +115,7 @@ export const minimizeFlightData = (flight: GoogleFlightData['best_flights'][numb
 		id: flight.id,
 		departure_airport: flight.flights[0].departure_airport.id,
 		arrival_airport: flight.flights[flight.flights.length - 1].arrival_airport.id,
-		layoverDuration: flight.layovers.reduce((acc, layover) => acc + layover.duration, 0),
+		layoverDuration: flight?.layovers?.reduce((acc, layover) => acc + layover.duration, 0),
 	};
 };
 

@@ -403,11 +403,7 @@ export const itineraryServices = {
 		if (!itinerary) throw new Error('Itinerary not found');
 
 		const g_flight = itinerary.g_flights;
-		if (g_flight.length == 0) {
-			itinerary.g_flights = [data];
-		} else {
-			itinerary.g_flights[0] = data;
-		}
+		g_flight[0] = data;
 
 		await itinerary.save();
 

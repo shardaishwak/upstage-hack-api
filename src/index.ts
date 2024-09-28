@@ -7,6 +7,7 @@ import { Server } from 'socket.io';
 import http from 'http';
 import { extractAdditionalInformation, handleChatV2 } from './chat';
 import { itineraryServices } from './app/itinerary/itinerary.service';
+import { serpApi } from './config/serpApi';
 
 dotenv.config();
 

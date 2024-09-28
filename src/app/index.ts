@@ -18,6 +18,7 @@ import fs from 'fs';
 import FormData from 'form-data';
 import { extractPassport } from '../chat';
 import { itineraryRouter } from './itinerary/itinerary.router';
+import { serpApi } from '../config/serpApi';
 
 dotenv.config();
 
@@ -180,6 +181,32 @@ app.post('/ocr', upload.single('document'), async (req: Request, res: Response) 
 	} catch (error) {
 		console.error('OCR error:', error);
 		res.status(500).send({ error: 'OCR processing failed' });
+	}
+});
+
+app.get('/return-flights', async (req: Request, res: Response) => {
+	try {
+		const { departure_id, arrival_id, departure_token, outbound_date, return_date } =
+			req.query as {
+				departure_id: string;
+				arrival_id: string;
+				departure_token: string;
+				outbound_date: string;
+				return_date: string;
+			};
+
+		const flights = await serpApi.getGoogleReturnFlight({
+			departure_id,
+			arrival_id,
+			departure_token,
+			outbound_date,
+			return_date,
+		});
+
+		res.json({ flights });
+	} catch (error) {
+		console.error('Error:', error);
+		res.status(500).send({ error: 'Failed to get return flights' });
 	}
 });
 

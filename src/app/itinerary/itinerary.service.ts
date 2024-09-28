@@ -405,11 +405,13 @@ export const itineraryServices = {
 		const g_flight = itinerary.g_flights;
 		if (g_flight.length == 0) {
 			itinerary.g_flights = [data];
-		} else if (g_flight.length == 1) {
-			itinerary.g_flights.push(data);
 		} else {
 			itinerary.g_flights[0] = data;
 		}
+
+		await itinerary.save();
+
+		return itinerary;
 	},
 
 	saveGoogleReturnFlight: async (
@@ -427,6 +429,10 @@ export const itineraryServices = {
 		} else {
 			throw new Error('Invalid operation. Outbound flight is not saved');
 		}
+
+		await itinerary.save();
+
+		return itinerary;
 	},
 
 	saveGoogleHotel: async (itineraryId: string, data: GoogleHotelProperty) => {

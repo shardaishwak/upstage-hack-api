@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get('/:id', itineraryController.getItinerary);
 
+router.get('/:id/magic', itineraryController.magicItinerary);
+
 router.get('/bookings/:id', itineraryController.getbooking);
 router.get('/bookings/user/:userId', itineraryController.getUserBookings);
 

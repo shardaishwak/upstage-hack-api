@@ -111,7 +111,6 @@ export const getGoogleFlights = async (params: any): Promise<GoogleFlightData | 
 
 export const minimizeFlightData = (flight: GoogleFlightData['best_flights'][number]) => {
 	// format ID: 1, departure
-
 	return {
 		id: flight.id,
 		departure_airport: flight.flights[0].departure_airport.id,

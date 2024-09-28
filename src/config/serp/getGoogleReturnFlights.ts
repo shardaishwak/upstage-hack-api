@@ -36,6 +36,7 @@ export const getGoogleReturnFlight = async (params: {
 			setCachedGoogleFlight(flight.id, flight);
 		});
 
+		console.log(response.data);
 		return response.data;
 	} catch (err: any) {
 		console.log(err?.response?.data);

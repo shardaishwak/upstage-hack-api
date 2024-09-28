@@ -112,12 +112,14 @@ export const extractAdditionalInformation = async (q: string) => {
 		Extract the location, from, to, people, preferences from the given query "${q}". Give a json formation of the following
 		If there is none for that info, return null in the appropriate field.
 
+		toDate should be when the itinerary starts: this can be given by the flight departure date. The toDate should be the date of the return flight.
+
 		The output should be
 		{
 			departure: string,
 			arrival: string
-			from: string,
-			to: string,
+			fromDate: string,
+			toDate: string,
 			people: number,
 			preferences: string[]	
 		}
@@ -188,6 +190,34 @@ export const extractPassport = async (html: string) => {
 
 	try {
 		const data = JSON.parse(responseMessage.content);
+		return data;
+	} catch (err) {
+		console.log(err);
+		return null;
+	}
+};
+
+export const magicItinerary = async (q: string) => {
+	const response = await upstage.chat.completions.create({
+		model: 'solar-1-mini-chat',
+		messages: [
+			{
+				role: 'user',
+				content: `"${q}". Include the ID`,
+			},
+		],
+	});
+
+	const responseMessage = response.choices[0].message;
+	const content = responseMessage.content;
+	if (!content) {
+		throw new Error('Failed to generate itinerary');
+	}
+
+	console.log(content);
+
+	try {
+		const data = JSON.parse(content);
 		return data;
 	} catch (err) {
 		console.log(err);

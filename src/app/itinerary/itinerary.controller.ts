@@ -181,9 +181,11 @@ export const itineraryController = {
 	saveGoogleOutoundFlight: async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const flight = req.body.flight;
+			const date = req.body.date;
 			const response = await itineraryServices.saveGoogleOutboundFlight(
 				req.params.id,
-				flight
+				flight,
+				date
 			);
 			res.send(response);
 		} catch (error) {
@@ -194,7 +196,12 @@ export const itineraryController = {
 	saveGoogleReturnFlight: async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const flight = req.body.flight;
-			const response = await itineraryServices.saveGoogleReturnFlight(req.params.id, flight);
+			const date = req.body.date;
+			const response = await itineraryServices.saveGoogleReturnFlight(
+				req.params.id,
+				flight,
+				date
+			);
 			res.send(response);
 		} catch (error) {
 			next(error);
@@ -352,6 +359,15 @@ export const itineraryController = {
 				req.params.title
 			);
 			res.send(response);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	magicItinerary: async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const response = await itineraryServices.generateItineraryMagic(req.params.id);
+			res.send({ message: 'Itinerary generated', data: response });
 		} catch (error) {
 			next(error);
 		}

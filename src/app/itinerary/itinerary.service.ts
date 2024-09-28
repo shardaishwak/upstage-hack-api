@@ -1,9 +1,16 @@
+import { start } from 'repl';
+import { magicItinerary } from '../../chat';
 import amadeus from '../../config/amadeus';
-import { GoogleEventsResult } from '../../config/serp/getGoogleEvents';
-import { GoogleFlightData } from '../../config/serp/getGoogleFlights';
-import { GoogleFoodResult } from '../../config/serp/getGoogleFood';
-import { GoogleHotelProperty } from '../../config/serp/getGoogleHotels';
-import { GooglePlacesResult } from '../../config/serp/getGooglePlaces';
+import { GoogleEventsResult, minimizeGoogleEvents } from '../../config/serp/getGoogleEvents';
+import { GoogleFlightData, minimizeFlightData } from '../../config/serp/getGoogleFlights';
+import { GoogleFoodResult, minimizeGoogleFood } from '../../config/serp/getGoogleFood';
+import { GoogleHotelProperty, minimizeGoogleHotel } from '../../config/serp/getGoogleHotels';
+import {
+	GooglePlacesResult,
+	minimizeGoogleLocalResults,
+	minimizeGoogleShoppingResults,
+	minimizeGoogleTopSights,
+} from '../../config/serp/getGooglePlaces';
 import { AmadeusFlightOffer, TravelerInfo } from './itinerary.interface';
 import { ItineraryModel } from './itinerary.model';
 
@@ -397,12 +404,14 @@ export const itineraryServices = {
 
 	saveGoogleOutboundFlight: async (
 		itineraryId: string,
-		data: GoogleFlightData['best_flights'][number]
+		data: GoogleFlightData['best_flights'][number],
+		date: string
 	) => {
 		const itinerary = await ItineraryModel.findById(itineraryId);
 		if (!itinerary) throw new Error('Itinerary not found');
 
 		itinerary.g_flights = [data];
+		itinerary.fromDate = date;
 
 		await itinerary.save();
 
@@ -411,7 +420,8 @@ export const itineraryServices = {
 
 	saveGoogleReturnFlight: async (
 		itineraryId: string,
-		data: GoogleFlightData['best_flights'][number]
+		data: GoogleFlightData['best_flights'][number],
+		date: string
 	) => {
 		const itinerary = await ItineraryModel.findById(itineraryId);
 		if (!itinerary) throw new Error('Itinerary not found');
@@ -424,6 +434,7 @@ export const itineraryServices = {
 		} else {
 			throw new Error('Invalid operation. Outbound flight is not saved');
 		}
+		itinerary.toDate = date;
 
 		await itinerary.save();
 
@@ -582,5 +593,119 @@ export const itineraryServices = {
 		);
 
 		return itinerary;
+	},
+
+	generateItineraryMagic: async (itineraryId: string) => {
+		const itinerary = await ItineraryModel.findById(itineraryId)
+			.populate('admin')
+			.populate('users.user');
+
+		if (!itinerary) throw new Error('Itinerary not found');
+
+		const q: any = {
+			data: {
+				oubound_date: itinerary.fromDate,
+				return_date: itinerary.toDate,
+				g_outbound_flight: [],
+				g_return_flight: [],
+				g_hotels: [],
+				g_top_sights: [],
+				g_local_results: [],
+				g_restaurants: [],
+				g_events: [],
+				g_places_shopping: [],
+			},
+			instruction: {
+				goal: 'Create a detailed chronological itinerary in JSON format using the provided flight, restaurant, and attraction data.',
+				assumptions: {
+					flights: 'Flights can take more than 2 hours unless otherwise specified.',
+					restaurants: 'Each meal takes 1.5 hours.',
+					attractions: 'Each attraction takes 1.5-2 hours depending on the activity.',
+					transfers: {
+						'airport-to-attraction': '45 minutes',
+						'airport-to-restaurant': '30 minutes',
+						'restaurant-to-attraction': '15 minutes',
+						'between-attractions': '20 minutes',
+						'destination-to-airport':
+							'need to arriva at least 2 hours before for domestic and 3 hours for international flights',
+					},
+				},
+				output_rule:
+					"You must generate entire itinerary. Generate the output in JSON format and include the following fields for each event: 'id', 'date', 'start_time', 'end_time','transfer_time'.Each activity has duration and the original data. For each event, insert a 'type' field which matches with the key in the 'data' object. The events should be listed in chronological order for each day, ensuring transfer times between each event. For example: day 1 will have an array of activitites to do, day 2 will have another array of activities to do, and so on.  ",
+				output_format: {
+					itinerary: [
+						{
+							day: 1,
+							events: [
+								{
+									type: 'g_outbound_flight or g_return_flight or g_hotels or g_top_sights or g_local_results or g_restaurants or g_events or g_places_shopping',
+									id: 'unique_id',
+									date: 'YYYY-MM-DD',
+									start_time: 'HH:MM',
+									end_time: 'HH:MM',
+									transfer_time: 'HH:MM',
+									original_data: [{}, {}, {}],
+								},
+							],
+						},
+					],
+				},
+			},
+		};
+
+		const departureFlight = minimizeFlightData(itinerary.g_flights[0]);
+		departureFlight.type = 'g_outbound_flight';
+		q.data.g_outbound_flight.push(departureFlight);
+
+		if (itinerary.g_flights.length === 2) {
+			const returnFlight = minimizeFlightData(itinerary.g_flights[1]);
+			returnFlight.type = 'g_return_flight';
+			q.data.g_return_flight.push(returnFlight);
+		}
+
+		itinerary.g_hotels.forEach((hotel) => {
+			const minHotel = minimizeGoogleHotel(hotel);
+			minHotel.type = 'g_hotels';
+			q.data.g_hotels.push(minHotel);
+		});
+
+		itinerary.g_restaurants.forEach((restaurant) => {
+			const mini = minimizeGoogleFood(restaurant);
+			mini.type = 'g_restaurants';
+			q.data.g_restaurants.push(mini);
+		});
+
+		itinerary.g_events.forEach((event) => {
+			const mini = minimizeGoogleEvents(event);
+			mini.type = 'g_events';
+			q.data.g_events.push(mini);
+		});
+
+		// places
+		itinerary.g_local_results.forEach((place) => {
+			const mini = minimizeGoogleLocalResults(place);
+			mini.type = 'g_local_results';
+			q.data.g_local_results.push(mini);
+		});
+
+		itinerary.g_places_shopping.forEach((place) => {
+			const mini = minimizeGoogleShoppingResults(place);
+			mini.type = 'g_places_shopping';
+			q.data.g_places_shopping.push(mini);
+		});
+
+		itinerary.g_top_sights.forEach((sight) => {
+			const mini = minimizeGoogleTopSights(sight);
+			mini.type = 'g_top_sights';
+			q.data.g_top_sights.push(mini);
+		});
+
+		const stringifiedQuery = JSON.stringify(q, null, 2);
+		const result = await magicItinerary(stringifiedQuery);
+
+		console.log(stringifiedQuery);
+		console.log(result);
+
+		return result;
 	},
 };

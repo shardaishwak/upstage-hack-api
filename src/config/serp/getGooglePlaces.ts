@@ -128,6 +128,33 @@ export interface GooglePlacesResult {
 	}[];
 }
 
+export const minimizeGoogleTopSights = (sight: GooglePlacesResult['top_sights']['sights'][0]) => {
+	return {
+		title: sight.title,
+		rating: sight.rating,
+		price: sight.price,
+	};
+};
+
+export const minimizeGoogleLocalResults = (
+	place: GooglePlacesResult['local_results']['places'][0]
+) => {
+	return {
+		title: place.title,
+		rating: place.rating,
+		hours: place.hours,
+		gps_coordinates: place.gps_coordinates,
+		address: place.address,
+	};
+};
+
+export const minimizeGoogleShoppingResults = (place: GooglePlacesResult['shopping_results'][0]) => {
+	return {
+		title: place.title,
+		price: place.price,
+	};
+};
+
 export default async function getGooglePlaces(params: {
 	q: string;
 }): Promise<GooglePlacesResult | null> {

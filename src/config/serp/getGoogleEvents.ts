@@ -80,14 +80,12 @@ export default async function getGoogleEvents(params: {
 	}
 }
 
-export const minimizeGoogleEvents = (events: GoogleEventsResult['events_results']) => {
-	return events.map((event) => {
-		return {
-			title: event.title,
-			address: event.address,
-			description: event.description,
-		};
-	});
+export const minimizeGoogleEvents = (event: GoogleEventsResult['events_results'][number]) => {
+	return {
+		title: event.title,
+		address: event.address,
+		description: event.description,
+	};
 };
 
 export const getGoogleCachedEvent = (

@@ -412,6 +412,7 @@ export const itineraryServices = {
 
 		itinerary.g_flights = [data];
 		itinerary.fromDate = date;
+		itinerary.model = {};
 
 		await itinerary.save();
 
@@ -436,6 +437,8 @@ export const itineraryServices = {
 		}
 		itinerary.toDate = date;
 
+		itinerary.model = {};
+
 		await itinerary.save();
 
 		return itinerary;
@@ -444,7 +447,7 @@ export const itineraryServices = {
 	saveGoogleHotel: async (itineraryId: string, data: GoogleHotelProperty) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $push: { g_hotels: data } },
+			{ $push: { g_hotels: data }, magic: {} },
 			{ new: true }
 		);
 
@@ -457,7 +460,7 @@ export const itineraryServices = {
 	) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $push: { g_top_sights: data } },
+			{ $push: { g_top_sights: data }, magic: {} },
 			{ new: true }
 		);
 
@@ -470,7 +473,7 @@ export const itineraryServices = {
 	) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $push: { g_local_results: data } },
+			{ $push: { g_local_results: data }, magic: {} },
 			{ new: true }
 		);
 
@@ -480,7 +483,7 @@ export const itineraryServices = {
 	saveGoogleRestaurants: async (itineraryId: string, data: GoogleFoodResult) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $push: { g_restaurants: data } },
+			{ $push: { g_restaurants: data }, magic: {} },
 			{ new: true }
 		);
 
@@ -493,7 +496,7 @@ export const itineraryServices = {
 	) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $push: { g_places_shopping: data } },
+			{ $push: { g_places_shopping: data }, magic: {} },
 			{ new: true }
 		);
 
@@ -503,7 +506,7 @@ export const itineraryServices = {
 	saveGoogleEvents: async (itineraryId: string, data: GoogleEventsResult['events_results']) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $push: { g_events: data } },
+			{ $push: { g_events: data }, magic: {} },
 			{ new: true }
 		);
 
@@ -513,7 +516,7 @@ export const itineraryServices = {
 	deleteGoogleOutboundFlight: async (itineraryId: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ g_flights: [] },
+			{ g_flights: [], magic: {} },
 			{ new: true }
 		);
 		return itinerary;
@@ -533,12 +536,17 @@ export const itineraryServices = {
 		} else {
 			throw new Error('Invalid operation. Outbound flight is not saved');
 		}
+
+		itinerary.model = {};
+
+		await itinerary.save();
+		return itinerary;
 	},
 
 	deleteGoogleHotel: async (itineraryId: string, property_token: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_hotels: { property_token } } },
+			{ $pull: { g_hotels: { property_token } }, magic: {} },
 			{ new: true }
 		);
 
@@ -548,7 +556,7 @@ export const itineraryServices = {
 	deleteGoogleTopSights: async (itineraryId: string, title: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_top_sights: { title } } },
+			{ $pull: { g_top_sights: { title } }, magic: {} },
 			{ new: true }
 		);
 
@@ -558,7 +566,7 @@ export const itineraryServices = {
 	deleteGoogleLocalResults: async (itineraryId: string, placeId: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_local_results: { place_id: placeId } } },
+			{ $pull: { g_local_results: { place_id: placeId } }, magic: {} },
 			{ new: true }
 		);
 
@@ -568,7 +576,7 @@ export const itineraryServices = {
 	deleteGoogleRestaurants: async (itineraryId: string, title: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_restaurants: { title: title } } },
+			{ $pull: { g_restaurants: { title: title } }, magic: {} },
 			{ new: true }
 		);
 
@@ -578,7 +586,7 @@ export const itineraryServices = {
 	deleteGoogleShopping: async (itineraryId: string, title: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_places_shopping: { title: title } } },
+			{ $pull: { g_places_shopping: { title: title } }, magic: {} },
 			{ new: true }
 		);
 
@@ -588,7 +596,7 @@ export const itineraryServices = {
 	deleteGoogleEvents: async (itineraryId: string, title: string) => {
 		const itinerary = await ItineraryModel.findByIdAndUpdate(
 			itineraryId,
-			{ $pull: { g_events: { title: title } } },
+			{ $pull: { g_events: { title: title } }, magic: {} },
 			{ new: true }
 		);
 
@@ -631,7 +639,7 @@ export const itineraryServices = {
 					},
 				},
 				output_rule:
-					"You must generate entire itinerary. Generate the output in JSON format and include the following fields for each event: 'id', 'date', 'start_time', 'end_time','transfer_time'.Each activity has duration and the original data. For each event, insert a 'type' field which matches with the key in the 'data' object. The events should be listed in chronological order for each day, ensuring transfer times between each event. For example: day 1 will have an array of activitites to do, day 2 will have another array of activities to do, and so on.  ",
+					"You must generate entire itinerary. Do not truncate anything. The itinerary needs to be feasable. 4-5 activities per day max. Generate the output in JSON format and include the following fields for each event: 'id', 'date', 'start_time', 'end_time','transfer_time'.Each activity has duration and the original data. For each event, insert a 'type' field which matches with the key in the 'data' object. The events should be listed in chronological order for each day, ensuring transfer times between each event. For example: day 1 will have an array of activitites to do, day 2 will have another array of activities to do, and so on.  ",
 				output_format: {
 					itinerary: [
 						{
@@ -644,7 +652,9 @@ export const itineraryServices = {
 									start_time: 'HH:MM',
 									end_time: 'HH:MM',
 									transfer_time: 'HH:MM',
-									original_data: [{}, {}, {}],
+									original_data: {},
+									position:
+										'number like 1, 2, 3 for all the events for all the days',
 								},
 							],
 						},
@@ -705,6 +715,11 @@ export const itineraryServices = {
 
 		console.log(stringifiedQuery);
 		console.log(result);
+
+		if (result?.itinerary) {
+			itinerary.magic = result?.itinerary;
+			await itinerary.save();
+		}
 
 		return result;
 	},

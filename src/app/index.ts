@@ -17,7 +17,7 @@ import stripeRoutes from './routes/stripe';
 import axios from 'axios';
 import fs from 'fs';
 import FormData from 'form-data';
-import { extractPassport } from '../chat';
+import { extractPassport, handleChatV2 } from '../chat';
 import { itineraryRouter } from './itinerary/itinerary.router';
 import { stripeServices } from './stripe/stripe.service';
 import { serpApi } from '../config/serpApi';
@@ -36,15 +36,14 @@ app.use(
 );
 
 // TODO: Connect stripe webhook
-app.post('/webhook', express.raw({ type: 'application/json' }),stripeServices.handleWebhook);
+app.post('/webhook', express.raw({ type: 'application/json' }), stripeServices.handleWebhook);
 
 app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/messages', messageRoutes);
 app.use('/itinerary', itineraryRouter);
-app.use('/stripe', stripeRoutes )
-
+app.use('/stripe', stripeRoutes);
 (async () => {
 	// await handleChatV2('give me a list of events that i can attend in vancouver for children');
 })();
@@ -57,7 +56,7 @@ app.get('/chat', async (req: Request, res: Response) => {
 	}
 
 	console.log('Starting chat');
-	const response = await handleChat(q as string);
+	const response = await handleChatV2(q as string);
 	console.log('Ending chat');
 	res.send(response);
 });
@@ -285,7 +284,7 @@ app.post('/passport', upload.single('document'), async (req: Request, res: Respo
  * Any error that occurs in the application will be caught here
  */
 app.use((err: ErrorWithStatus, req: Request, res: Response, _: NextFunction) => {
-	if (res.headersSent) return;
+	if (res?.headersSent) return;
 
 	const status = err.status || 500;
 	const message = err.message || 'Something went wrong';

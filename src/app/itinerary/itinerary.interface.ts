@@ -47,6 +47,8 @@ export interface IItinerary {
 	g_places_shopping: GooglePlacesResult['shopping_results'];
 	g_events: GoogleEventsResult['events_results'];
 
+	magic: object;
+
 	createdAt: string;
 	updatedAt: string;
 

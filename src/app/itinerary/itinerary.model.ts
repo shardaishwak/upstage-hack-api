@@ -193,6 +193,10 @@ const ItinerarySchema = new mongoose.Schema<IItinerary>(
 			],
 			default: [],
 		},
+		magic: {
+			type: Object,
+			default: {},
+		},
 	},
 	{ timestamps: true }
 );

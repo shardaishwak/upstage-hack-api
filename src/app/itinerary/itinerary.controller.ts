@@ -367,7 +367,7 @@ export const itineraryController = {
 	magicItinerary: async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const response = await itineraryServices.generateItineraryMagic(req.params.id);
-			res.send({ message: 'Itinerary generated', data: response });
+			res.send({ message: 'Itinerary generated', itinerary: response?.itinerary });
 		} catch (error) {
 			next(error);
 		}

@@ -79,13 +79,14 @@ export const getGoogleFood = async (params: {
 };
 
 export const minimizeGoogleFood = (data: GoogleFoodResult) => {
-	const { title, rating, address, restaurant_id } = data;
+	const { title, rating, address, restaurant_id, images } = data;
 
 	return {
 		restaurant_id,
 		title,
 		rating,
 		address,
+		image: images?.[0],
 	};
 };
 

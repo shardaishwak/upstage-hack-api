@@ -199,7 +199,7 @@ export const extractPassport = async (html: string) => {
 
 export const magicItinerary = async (q: string) => {
 	const response = await upstage.chat.completions.create({
-		model: 'solar-1-mini-chat',
+		model: 'solar-pro',
 		messages: [
 			{
 				role: 'user',

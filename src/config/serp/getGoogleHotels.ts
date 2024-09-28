@@ -132,7 +132,7 @@ export default async function getGoogleHotels(
 }
 
 export const minimizeGoogleHotel = (data: GoogleHotelProperty) => {
-	const { name, overall_rating, check_in_time, check_out_time, property_token } = data;
+	const { name, overall_rating, check_in_time, check_out_time, property_token, images } = data;
 
 	return {
 		name,
@@ -140,6 +140,7 @@ export const minimizeGoogleHotel = (data: GoogleHotelProperty) => {
 		property_token,
 		check_in_time,
 		check_out_time,
+		image: images?.[0]?.thumbnail,
 	};
 };
 

@@ -85,6 +85,7 @@ export const minimizeGoogleEvents = (event: GoogleEventsResult['events_results']
 		title: event.title,
 		address: event.address,
 		description: event.description,
+		image: event.thumbnail,
 	};
 };
 

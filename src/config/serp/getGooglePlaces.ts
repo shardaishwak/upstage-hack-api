@@ -133,6 +133,7 @@ export const minimizeGoogleTopSights = (sight: GooglePlacesResult['top_sights'][
 		title: sight.title,
 		rating: sight.rating,
 		price: sight.price,
+		image: sight.thumbnail,
 	};
 };
 
@@ -145,6 +146,7 @@ export const minimizeGoogleLocalResults = (
 		hours: place.hours,
 		gps_coordinates: place.gps_coordinates,
 		address: place.address,
+		image: place.thumbnail,
 	};
 };
 
@@ -152,6 +154,7 @@ export const minimizeGoogleShoppingResults = (place: GooglePlacesResult['shoppin
 	return {
 		title: place.title,
 		price: place.price,
+		image: place.thumbnail,
 	};
 };
 

@@ -402,8 +402,7 @@ export const itineraryServices = {
 		const itinerary = await ItineraryModel.findById(itineraryId);
 		if (!itinerary) throw new Error('Itinerary not found');
 
-		const g_flight = itinerary.g_flights;
-		g_flight[0] = data;
+		itinerary.g_flights = [data];
 
 		await itinerary.save();
 

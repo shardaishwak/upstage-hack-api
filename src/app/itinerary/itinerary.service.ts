@@ -70,7 +70,7 @@ export const itineraryServices = {
 				},
 			},
 			isBooked: false,
-		});
+		}).sort({ createdAt: -1 });
 
 		return itineraries;
 	},
@@ -394,11 +394,16 @@ export const itineraryServices = {
 			preferences?: string[];
 		}
 	) => {
-		const itinerary = await ItineraryModel.findByIdAndUpdate(
-			itineraryId,
-			{ ...additionalInfo },
-			{ new: true }
-		);
+		const itinerary = await ItineraryModel.findById(itineraryId);
+		if (!itinerary) throw new Error('Itinerary not found');
+
+		if (additionalInfo?.departure) itinerary.departure = additionalInfo.departure;
+		if (additionalInfo?.arrival) itinerary.arrival = additionalInfo.arrival;
+		if (additionalInfo?.fromDate) itinerary.fromDate = additionalInfo.fromDate;
+		if (additionalInfo?.toDate) itinerary.toDate = additionalInfo.toDate;
+		if (additionalInfo?.people) itinerary.people = additionalInfo.people;
+		if (additionalInfo?.preferences) itinerary.preferences = additionalInfo.preferences;
+
 		return itinerary;
 	},
 

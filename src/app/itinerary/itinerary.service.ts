@@ -372,7 +372,7 @@ export const itineraryServices = {
 				},
 			},
 			isBooked: true,
-		});
+		}).sort({ createdAt: -1 });
 
 		return itineraries;
 	},

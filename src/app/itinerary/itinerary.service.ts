@@ -417,7 +417,7 @@ export const itineraryServices = {
 
 		itinerary.g_flights = [data];
 		itinerary.fromDate = date;
-		itinerary.model = {};
+		itinerary.magic = {};
 
 		await itinerary.save();
 
@@ -442,7 +442,7 @@ export const itineraryServices = {
 		}
 		itinerary.toDate = date;
 
-		itinerary.model = {};
+		itinerary.magic = {};
 
 		await itinerary.save();
 

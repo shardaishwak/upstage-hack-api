@@ -8,3 +8,4 @@ export const upstage = new OpenAI({
 	baseURL: 'https://api.upstage.ai/v1/solar',
 });
 
+export const MAIN_MODEL = 'solar-1-mini-chat';

@@ -629,7 +629,7 @@ export const itineraryServices = {
 				g_places_shopping: [],
 			},
 			instruction: {
-				goal: 'Create a detailed chronological itinerary in JSON format using the provided flight, restaurant, and attraction data.',
+				goal: 'Create a detailed chronological itinerary in JSON format using the provided flight, restaurant, and attraction data. DO NOT PROVIDE ANY CONTEXT.',
 				assumptions: {
 					flights: 'Flights can take more than 2 hours unless otherwise specified.',
 					restaurants: 'Each meal takes 1.5 hours.',
@@ -718,7 +718,6 @@ export const itineraryServices = {
 		const stringifiedQuery = JSON.stringify(q, null, 2);
 		const result = await magicItinerary(stringifiedQuery);
 
-		console.log(stringifiedQuery);
 		console.log(result);
 
 		if (result?.itinerary) {

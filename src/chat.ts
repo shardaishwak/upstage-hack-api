@@ -1,5 +1,5 @@
 import { ChatCompletionMessageParam } from 'openai/resources';
-import { upstage } from './config/upstage';
+import { MAIN_MODEL, upstage } from './config/upstage';
 import { Server } from 'socket.io';
 import { google_tool_functions, google_tools } from './google_tools';
 
@@ -47,7 +47,7 @@ export const handleChatV2 = async (q: string, io?: Server) => {
 			'. If user added return flight, type=1, otherwise type=2.',
 	});
 	const response = await upstage.chat.completions.create({
-		model: 'solar-1-mini-chat',
+		model: MAIN_MODEL,
 		messages,
 		tools: google_tools,
 	});
@@ -126,7 +126,7 @@ export const extractAdditionalInformation = async (q: string) => {
 	`;
 
 	const response = await upstage.chat.completions.create({
-		model: 'solar-1-mini-chat',
+		model: MAIN_MODEL,
 		messages: [
 			{
 				role: 'system',
@@ -172,7 +172,7 @@ export const extractPassport = async (html: string) => {
 	`;
 
 	const response = await upstage.chat.completions.create({
-		model: 'solar-1-mini-chat',
+		model: MAIN_MODEL,
 		messages: [
 			{
 				role: 'system',
@@ -199,7 +199,7 @@ export const extractPassport = async (html: string) => {
 
 export const magicItinerary = async (q: string) => {
 	const response = await upstage.chat.completions.create({
-		model: 'solar-1-mini-chat',
+		model: MAIN_MODEL,
 		messages: [
 			{
 				role: 'user',
@@ -214,7 +214,7 @@ export const magicItinerary = async (q: string) => {
 		throw new Error('Failed to generate itinerary');
 	}
 
-	console.log(content);
+	console.log('CONTENT', content);
 
 	try {
 		const data = JSON.parse(content);
